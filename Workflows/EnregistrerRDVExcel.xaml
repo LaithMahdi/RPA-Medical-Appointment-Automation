@@ -31,13 +31,13 @@
 
     <!-- Timestamp -->
     <Assign DisplayName="[SET] Timestamp actuel">
-      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_Timestamp"/></OutArgument></Assign.To>
+      <Assign.To><OutArgument x:TypeArguments="x:String">[v_Timestamp]</OutArgument></Assign.To>
       <Assign.Value><InArgument x:TypeArguments="x:String">[DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")]</InArgument></Assign.Value>
     </Assign>
 
     <!-- Chemin fichier RDV -->
     <Assign DisplayName="[SET] Chemin fichier RDV">
-      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_CheminRDV"/></OutArgument></Assign.To>
+      <Assign.To><OutArgument x:TypeArguments="x:String">[v_CheminRDV]</OutArgument></Assign.To>
       <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelRDVPath"))]</InArgument></Assign.Value>
     </Assign>
 
@@ -48,7 +48,7 @@
     <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir Dossier RDV"
       WorkbookPath="[v_CheminRDV]">
       <ui:ExcelApplicationScope.Body>
-        <ActivityAction>
+        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
           </ActivityAction.Argument>
@@ -58,9 +58,7 @@
             <ui:ReadRange DisplayName="[EXCEL] Lire feuille RendezVous"
               SheetName="RendezVous" Range="" AddHeaders="True">
               <ui:ReadRange.DataTable>
-                <OutArgument x:TypeArguments="sd:DataTable">
-                  <x:Reference Name="dt_RDV"/>
-                </OutArgument>
+                <OutArgument x:TypeArguments="sd:DataTable">[dt_RDV]</OutArgument>
               </ui:ReadRange.DataTable>
             </ui:ReadRange>
 
@@ -68,9 +66,7 @@
             <InvokeMethod DisplayName="[DATA] Ajouter nouvelle ligne RDV"
               MethodName="Rows.Add">
               <InvokeMethod.TargetObject>
-                <InArgument x:TypeArguments="sd:DataTable">
-                  <x:Reference Name="dt_RDV"/>
-                </InArgument>
+                <InArgument x:TypeArguments="x:Object">[dt_RDV.Rows]</InArgument>
               </InvokeMethod.TargetObject>
               <InvokeMethod.Parameters>
                 <InArgument x:TypeArguments="x:Object[]">
@@ -94,9 +90,6 @@
               AddHeaders="True"
               DataTable="[dt_RDV]"/>
 
-            <!-- Sauvegarder -->
-            <ui:ExcelSaveAS DisplayName="[EXCEL] Sauvegarder le fichier RDV" FileName="[v_CheminRDV]"/>
-
           </Sequence>
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>
@@ -104,7 +97,7 @@
 
     <!-- Confirmer succès -->
     <Assign DisplayName="[OUT] RDV Confirmé = True">
-      <Assign.To><OutArgument x:TypeArguments="x:Boolean"><x:Reference Name="out_RDVConfirme"/></OutArgument></Assign.To>
+      <Assign.To><OutArgument x:TypeArguments="x:Boolean">[out_RDVConfirme]</OutArgument></Assign.To>
       <Assign.Value><InArgument x:TypeArguments="x:Boolean"><Literal x:TypeArguments="x:Boolean" Value="True"/></InArgument></Assign.Value>
     </Assign>
 

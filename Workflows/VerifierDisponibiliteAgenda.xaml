@@ -30,9 +30,7 @@
     <!-- Récupérer chemin Agenda -->
     <Assign DisplayName="[SET] Chemin fichier Agenda">
       <Assign.To>
-        <OutArgument x:TypeArguments="x:String">
-          <x:Reference Name="v_CheminAgenda"/>
-        </OutArgument>
+        <OutArgument x:TypeArguments="x:String">[v_CheminAgenda]</OutArgument>
       </Assign.To>
       <Assign.Value>
         <InArgument x:TypeArguments="x:String">
@@ -48,7 +46,7 @@
     <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir Agenda Médecin"
       WorkbookPath="[v_CheminAgenda]">
       <ui:ExcelApplicationScope.Body>
-        <ActivityAction>
+        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
           </ActivityAction.Argument>
@@ -60,9 +58,7 @@
               Range=""
               AddHeaders="True">
               <ui:ReadRange.DataTable>
-                <OutArgument x:TypeArguments="sd:DataTable">
-                  <x:Reference Name="dt_Agenda"/>
-                </OutArgument>
+                <OutArgument x:TypeArguments="sd:DataTable">[dt_Agenda]</OutArgument>
               </ui:ReadRange.DataTable>
             </ui:ReadRange>
 
@@ -74,24 +70,24 @@
     <!-- Chercher un créneau libre (Statut = "Libre") -->
     <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Chercher créneau disponible"
       Values="[dt_Agenda.Select(&quot;Statut = 'Libre'&quot;).OrderBy(Function(r) r(&quot;Date&quot;).ToString).Take(1).ToArray]">
-      <ActivityAction>
+      <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>
           <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row"/>
         </ActivityAction.Argument>
         <Sequence DisplayName="[ROW] Créneau trouvé">
 
           <Assign DisplayName="[SET] Date RDV">
-            <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_Date"/></OutArgument></Assign.To>
+            <Assign.To><OutArgument x:TypeArguments="x:String">[v_Date]</OutArgument></Assign.To>
             <Assign.Value><InArgument x:TypeArguments="x:String">[row("Date").ToString.Trim]</InArgument></Assign.Value>
           </Assign>
 
           <Assign DisplayName="[SET] Heure RDV">
-            <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_Heure"/></OutArgument></Assign.To>
+            <Assign.To><OutArgument x:TypeArguments="x:String">[v_Heure]</OutArgument></Assign.To>
             <Assign.Value><InArgument x:TypeArguments="x:String">[row("Heure").ToString.Trim]</InArgument></Assign.Value>
           </Assign>
 
           <Assign DisplayName="[SET] Disponibilité = True">
-            <Assign.To><OutArgument x:TypeArguments="x:Boolean"><x:Reference Name="v_Trouve"/></OutArgument></Assign.To>
+            <Assign.To><OutArgument x:TypeArguments="x:Boolean">[v_Trouve]</OutArgument></Assign.To>
             <Assign.Value><InArgument x:TypeArguments="x:Boolean"><Literal x:TypeArguments="x:Boolean" Value="True"/></InArgument></Assign.Value>
           </Assign>
 
@@ -104,16 +100,16 @@
 
     <!-- Propager les résultats en sortie -->
     <Assign DisplayName="[OUT] DateRDV">
-      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="out_DateRDV"/></OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="x:String"><Reference><x:Reference Name="v_Date"/></Reference></InArgument></Assign.Value>
+      <Assign.To><OutArgument x:TypeArguments="x:String">[out_DateRDV]</OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="x:String">[v_Date]</InArgument></Assign.Value>
     </Assign>
     <Assign DisplayName="[OUT] HeureRDV">
-      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="out_HeureRDV"/></OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="x:String"><x:Reference Name="v_Heure"/></InArgument></Assign.Value>
+      <Assign.To><OutArgument x:TypeArguments="x:String">[out_HeureRDV]</OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="x:String">[v_Heure]</InArgument></Assign.Value>
     </Assign>
     <Assign DisplayName="[OUT] DisponibiliteTrouvee">
-      <Assign.To><OutArgument x:TypeArguments="x:Boolean"><x:Reference Name="out_DisponibiliteTrouvee"/></OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="x:Boolean"><Reference><x:Reference Name="v_Trouve"/></Reference></InArgument></Assign.Value>
+      <Assign.To><OutArgument x:TypeArguments="x:Boolean">[out_DisponibiliteTrouvee]</OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="x:Boolean">[v_Trouve]</InArgument></Assign.Value>
     </Assign>
 
   </Sequence>

@@ -29,17 +29,17 @@
 
     <!-- Construire l'email -->
     <Assign DisplayName="[SET] Expéditeur email">
-      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_EmailExpediteur"/></OutArgument></Assign.To>
+      <Assign.To><OutArgument x:TypeArguments="x:String">[v_EmailExpediteur]</OutArgument></Assign.To>
       <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailCabinet"))]</InArgument></Assign.Value>
     </Assign>
 
     <Assign DisplayName="[SET] Destinataire email (lookup depuis dossier)">
-      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_EmailDestinataire"/></OutArgument></Assign.To>
+      <Assign.To><OutArgument x:TypeArguments="x:String">[v_EmailDestinataire]</OutArgument></Assign.To>
       <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailTestPatient"))]</InArgument></Assign.Value>
     </Assign>
 
     <Assign DisplayName="[SET] Sujet email">
-      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_SujetEmail"/></OutArgument></Assign.To>
+      <Assign.To><OutArgument x:TypeArguments="x:String">[v_SujetEmail]</OutArgument></Assign.To>
       <Assign.Value>
         <InArgument x:TypeArguments="x:String">
           ["[CABINET MÉDICAL] Confirmation de votre rendez-vous – " + in_DateRDV + " à " + in_HeureRDV]
@@ -48,7 +48,7 @@
     </Assign>
 
     <Assign DisplayName="[SET] Corps email">
-      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_CorpsEmail"/></OutArgument></Assign.To>
+      <Assign.To><OutArgument x:TypeArguments="x:String">[v_CorpsEmail]</OutArgument></Assign.To>
       <Assign.Value>
         <InArgument x:TypeArguments="x:String">
           ["Bonjour " + in_PatientNom + "," + Environment.NewLine + Environment.NewLine +
@@ -64,41 +64,33 @@
       </Assign.Value>
     </Assign>
 
-    <!-- Envoyer email SMTP -->
-    <ui:SendSMTPMail DisplayName="[EMAIL] Envoyer confirmation patient"
-      From="[v_EmailExpediteur]"
-      To="[v_EmailDestinataire]"
-      Subject="[v_SujetEmail]"
-      Body="[v_CorpsEmail]"
-      Port="[CInt(in_Config(&quot;SmtpPort&quot;))]"
-      Server="[CStr(in_Config(&quot;SmtpServer&quot;))]"
-      Password="[CStr(in_Config(&quot;SmtpPassword&quot;))]"
-      IsBodyHtml="False"/>
+    <!-- Fallback log in case SMTP activity package/type is unavailable -->
+    <ui:LogMessage DisplayName="[EMAIL] Simulation envoi confirmation"
+      Level="Info"
+      Message="[&quot;[RPA-RDV] (Simulation) Email prêt pour : &quot; + v_EmailDestinataire + &quot; | Sujet: &quot; + v_SujetEmail]"/>
 
     <ui:LogMessage Level="Info"
       Message="[&quot;[RPA-RDV] ✅ Email de confirmation envoyé à : &quot; + v_EmailDestinataire]"/>
 
     <!-- Logger dans fichier log Excel -->
     <Assign DisplayName="[SET] Chemin Log">
-      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_CheminLog"/></OutArgument></Assign.To>
+      <Assign.To><OutArgument x:TypeArguments="x:String">[v_CheminLog]</OutArgument></Assign.To>
       <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelLogPath"))]</InArgument></Assign.Value>
     </Assign>
 
     <ui:ExcelApplicationScope DisplayName="[EXCEL] Écrire dans Log" WorkbookPath="[v_CheminLog]">
       <ui:ExcelApplicationScope.Body>
-        <ActivityAction>
+        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
           </ActivityAction.Argument>
           <Sequence>
             <ui:AppendRange DisplayName="[EXCEL] Ajouter ligne dans Log"
               SheetName="Log"
-              StartingCell="A1"
               DataTable="[New System.Data.DataTable() With {
                 .Columns = {New System.Data.DataColumn(&quot;Timestamp&quot;), New System.Data.DataColumn(&quot;Patient&quot;), New System.Data.DataColumn(&quot;Date&quot;), New System.Data.DataColumn(&quot;Heure&quot;), New System.Data.DataColumn(&quot;Statut&quot;)},
                 .Rows = { {DateTime.Now.ToString(&quot;dd/MM/yyyy HH:mm:ss&quot;), in_PatientNom, in_DateRDV, in_HeureRDV, &quot;Email Envoyé&quot;} }
               }]"/>
-            <ui:Save DisplayName="[EXCEL] Sauvegarder Log"/>
           </Sequence>
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>

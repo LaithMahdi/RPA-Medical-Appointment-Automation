@@ -24,15 +24,15 @@
 
     <!-- Initialiser le dictionnaire -->
     <Assign DisplayName="[INIT] Créer dictionnaire Config">
-      <Assign.To><OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)"><x:Reference Name="v_Config"/></OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)"><Literal x:TypeArguments="scg:Dictionary(x:String, x:Object)" Value="[New Dictionary(Of String, Object)()]"/></InArgument></Assign.Value>
+      <Assign.To><OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[v_Config]</OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[New Dictionary(Of String, Object)()]</InArgument></Assign.Value>
     </Assign>
 
     <!-- Lire Config.xlsx -->
     <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir Config.xlsx"
       WorkbookPath="[in_ConfigFilePath]">
       <ui:ExcelApplicationScope.Body>
-        <ActivityAction>
+        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
           </ActivityAction.Argument>
@@ -40,9 +40,7 @@
             <ui:ReadRange DisplayName="[EXCEL] Lire feuille Config"
               SheetName="Config" Range="" AddHeaders="True">
               <ui:ReadRange.DataTable>
-                <OutArgument x:TypeArguments="sd:DataTable">
-                  <x:Reference Name="dt_Config"/>
-                </OutArgument>
+                <OutArgument x:TypeArguments="sd:DataTable">[dt_Config]</OutArgument>
               </ui:ReadRange.DataTable>
             </ui:ReadRange>
           </Sequence>
@@ -53,7 +51,7 @@
     <!-- Charger toutes les lignes clé/valeur dans le dictionnaire -->
     <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Charger paramètres Config"
       Values="[dt_Config.Rows.Cast(Of sd:DataRow)()]">
-      <ActivityAction>
+      <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>
           <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row"/>
         </ActivityAction.Argument>
@@ -73,8 +71,8 @@
 
     <!-- Propager le dictionnaire en sortie -->
     <Assign DisplayName="[OUT] Config chargée">
-      <Assign.To><OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)"><x:Reference Name="out_Config"/></OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)"><x:Reference Name="v_Config"/></InArgument></Assign.Value>
+      <Assign.To><OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[out_Config]</OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[v_Config]</InArgument></Assign.Value>
     </Assign>
 
     <ui:LogMessage Level="Info"

@@ -28,9 +28,7 @@
     <!-- Récupérer chemin Excel depuis Config -->
     <Assign DisplayName="[SET] Chemin fichier Excel Demandes">
       <Assign.To>
-        <OutArgument x:TypeArguments="x:String">
-          <x:Reference Name="v_CheminExcel"/>
-        </OutArgument>
+        <OutArgument x:TypeArguments="x:String">[v_CheminExcel]</OutArgument>
       </Assign.To>
       <Assign.Value>
         <InArgument x:TypeArguments="x:String">
@@ -42,7 +40,7 @@
     <!-- Lire le fichier Excel Demandes -->
     <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir fichier Demandes" WorkbookPath="[v_CheminExcel]">
       <ui:ExcelApplicationScope.Body>
-        <ActivityAction>
+        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
           </ActivityAction.Argument>
@@ -52,9 +50,7 @@
               Range=""
               AddHeaders="True">
               <ui:ReadRange.DataTable>
-                <OutArgument x:TypeArguments="sd:DataTable">
-                  <x:Reference Name="dt_Demandes"/>
-                </OutArgument>
+                <OutArgument x:TypeArguments="sd:DataTable">[dt_Demandes]</OutArgument>
               </ui:ReadRange.DataTable>
             </ui:ReadRange>
           </Sequence>
@@ -65,24 +61,24 @@
     <!-- Trouver la première ligne avec statut "En attente" -->
     <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Parcourir les demandes"
       Values="[dt_Demandes.Select(&quot;Statut = 'En attente'&quot;)]">
-      <ActivityAction>
+      <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>
           <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row"/>
         </ActivityAction.Argument>
         <Sequence DisplayName="[ROW] Extraire informations patient">
 
           <Assign DisplayName="[SET] Nom patient">
-            <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="out_PatientNom"/></OutArgument></Assign.To>
+            <Assign.To><OutArgument x:TypeArguments="x:String">[out_PatientNom]</OutArgument></Assign.To>
             <Assign.Value><InArgument x:TypeArguments="x:String">[row("Nom").ToString.Trim]</InArgument></Assign.Value>
           </Assign>
 
           <Assign DisplayName="[SET] Téléphone patient">
-            <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="out_PatientTelephone"/></OutArgument></Assign.To>
+            <Assign.To><OutArgument x:TypeArguments="x:String">[out_PatientTelephone]</OutArgument></Assign.To>
             <Assign.Value><InArgument x:TypeArguments="x:String">[row("Telephone").ToString.Trim]</InArgument></Assign.Value>
           </Assign>
 
           <Assign DisplayName="[SET] Motif consultation">
-            <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="out_PatientMotif"/></OutArgument></Assign.To>
+            <Assign.To><OutArgument x:TypeArguments="x:String">[out_PatientMotif]</OutArgument></Assign.To>
             <Assign.Value><InArgument x:TypeArguments="x:String">[row("Motif").ToString.Trim]</InArgument></Assign.Value>
           </Assign>
 
