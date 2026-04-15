@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Activity mc:Ignorable="sap sap2010 sap2010 sads" 
+  x:Class="UiPath.RDV.Main"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
+  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+  xmlns:ui="http://schemas.uipath.com/workflow/activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <x:Members>
+    <!-- Configuration Variables -->
+    <x:Property Name="Config" Type="InOutArgument(scg:Dictionary(x:String, x:Object))"/>
+  </x:Members>
+
+  <sap2010:WorkflowViewState.IdRef>Main</sap2010:WorkflowViewState.IdRef>
+
+  <Sequence DisplayName="[MAIN] Processus Automatisé – Prise de RDV Médical" sap:VirtualizedContainerService.HintSize="900,800">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)" Name="Config"/>
+      <Variable x:TypeArguments="x:String" Name="PatientNom" Default=""/>
+      <Variable x:TypeArguments="x:String" Name="PatientTelephone" Default=""/>
+      <Variable x:TypeArguments="x:String" Name="PatientMotif" Default=""/>
+      <Variable x:TypeArguments="x:String" Name="DateRDV" Default=""/>
+      <Variable x:TypeArguments="x:String" Name="HeureRDV" Default=""/>
+      <Variable x:TypeArguments="x:Boolean" Name="RDVConfirme" Default="False"/>
+      <Variable x:TypeArguments="x:Boolean" Name="DisponibiliteTrouvee" Default="False"/>
+      <Variable x:TypeArguments="x:String" Name="CheminExcel" Default=""/>
+      <Variable x:TypeArguments="x:String" Name="TransactionStatus" Default=""/>
+    </Sequence.Variables>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- ÉTAPE 0 : INITIALISATION -->
+    <!-- ══════════════════════════════════════════════ -->
+    <ui:LogMessage DisplayName="[LOG] Démarrage du Robot RPA – Prise de RDV" Level="Info"
+      Message="&quot;[RPA-RDV] === Démarrage du processus de prise de rendez-vous médical ===&quot;"/>
+
+    <ui:InvokeWorkflowFile DisplayName="[INIT] Chargement de la configuration"
+      WorkflowFileName="Workflows\InitAllSettings.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <InArgument x:TypeArguments="x:String" x:Key="in_ConfigFilePath">
+          <Literal x:TypeArguments="x:String" Value="Data\Config.xlsx"/>
+        </InArgument>
+        <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="out_Config">
+          <Reference>
+            <x:Reference Name="Config"/>
+          </Reference>
+        </OutArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- ÉTAPE 1 : LECTURE DES DEMANDES DANS EXCEL -->
+    <!-- ══════════════════════════════════════════════ -->
+    <ui:LogMessage DisplayName="[LOG] Étape 1 – Lecture des demandes patients"
+      Level="Info" Message="&quot;[RPA-RDV] ÉTAPE 1 : Lecture du fichier Excel des demandes&quot;"/>
+
+    <ui:InvokeWorkflowFile DisplayName="[WF] LireDemandesExcel"
+      WorkflowFileName="Workflows\LireDemandesExcel.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">
+          <Reference>
+            <x:Reference Name="Config"/>
+          </Reference>
+        </InArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PatientNom">
+          <Reference>
+            <x:Reference Name="PatientNom"/>
+          </Reference>
+        </OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PatientTelephone">
+          <Reference>
+            <x:Reference Name="PatientTelephone"/>
+          </Reference>
+        </OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PatientMotif">
+          <Reference>
+            <x:Reference Name="PatientMotif"/>
+          </Reference>
+        </OutArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- ÉTAPE 2 : VÉRIFICATION DISPONIBILITÉ AGENDA -->
+    <!-- ══════════════════════════════════════════════ -->
+    <ui:LogMessage DisplayName="[LOG] Étape 2 – Vérification disponibilité médecin"
+      Level="Info" Message="&quot;[RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin&quot;"/>
+
+    <ui:InvokeWorkflowFile DisplayName="[WF] VerifierDisponibiliteAgenda"
+      WorkflowFileName="Workflows\VerifierDisponibiliteAgenda.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">
+          <Reference>
+            <x:Reference Name="Config"/>
+          </Reference>
+        </InArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_DateRDV">
+          <Reference>
+            <x:Reference Name="DateRDV"/>
+          </Reference>
+        </OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_HeureRDV">
+          <Reference>
+            <x:Reference Name="HeureRDV"/>
+          </Reference>
+        </OutArgument>
+        <OutArgument x:TypeArguments="x:Boolean" x:Key="out_DisponibiliteTrouvee">
+          <Reference>
+            <x:Reference Name="DisponibiliteTrouvee"/>
+          </Reference>
+        </OutArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- DÉCISION : Disponibilité trouvée ? -->
+    <!-- ══════════════════════════════════════════════ -->
+    <If DisplayName="[IF] Créneau disponible trouvé ?" Condition="[DisponibiliteTrouvee]">
+
+      <If.Then>
+        <Sequence DisplayName="[THEN] Enregistrement et Confirmation">
+
+          <!-- ÉTAPE 3 : ENREGISTREMENT RDV -->
+          <ui:LogMessage DisplayName="[LOG] Étape 3 – Enregistrement du rendez-vous"
+            Level="Info" Message="&quot;[RPA-RDV] ÉTAPE 3 : Enregistrement du rendez-vous dans Excel&quot;"/>
+
+          <ui:InvokeWorkflowFile DisplayName="[WF] EnregistrerRDVExcel"
+            WorkflowFileName="Workflows\EnregistrerRDVExcel.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">
+                <Reference><x:Reference Name="Config"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">
+                <Reference><x:Reference Name="PatientNom"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PatientTelephone">
+                <Reference><x:Reference Name="PatientTelephone"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PatientMotif">
+                <Reference><x:Reference Name="PatientMotif"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">
+                <Reference><x:Reference Name="DateRDV"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">
+                <Reference><x:Reference Name="HeureRDV"/></Reference>
+              </InArgument>
+              <OutArgument x:TypeArguments="x:Boolean" x:Key="out_RDVConfirme">
+                <Reference><x:Reference Name="RDVConfirme"/></Reference>
+              </OutArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+
+          <!-- ÉTAPE 4 : MISE À JOUR AGENDA MÉDECIN -->
+          <ui:LogMessage DisplayName="[LOG] Étape 4 – Mise à jour agenda"
+            Level="Info" Message="&quot;[RPA-RDV] ÉTAPE 4 : Mise à jour de l'agenda du médecin&quot;"/>
+
+          <ui:InvokeWorkflowFile DisplayName="[WF] MettreAJourAgenda"
+            WorkflowFileName="Workflows\MettreAJourAgenda.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">
+                <Reference><x:Reference Name="Config"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">
+                <Reference><x:Reference Name="DateRDV"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">
+                <Reference><x:Reference Name="HeureRDV"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">
+                <Reference><x:Reference Name="PatientNom"/></Reference>
+              </InArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+
+          <!-- ÉTAPE 5 : NOTIFICATION PATIENT -->
+          <ui:LogMessage DisplayName="[LOG] Étape 5 – Envoi notification"
+            Level="Info" Message="&quot;[RPA-RDV] ÉTAPE 5 : Envoi de la confirmation au patient&quot;"/>
+
+          <ui:InvokeWorkflowFile DisplayName="[WF] EnvoyerNotificationPatient"
+            WorkflowFileName="Workflows\EnvoyerNotificationPatient.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">
+                <Reference><x:Reference Name="Config"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">
+                <Reference><x:Reference Name="PatientNom"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">
+                <Reference><x:Reference Name="DateRDV"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">
+                <Reference><x:Reference Name="HeureRDV"/></Reference>
+              </InArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+
+          <Assign DisplayName="[SET] Statut = Succès">
+            <Assign.To><OutArgument x:TypeArguments="x:String"><Reference><x:Reference Name="TransactionStatus"/></Reference></OutArgument></Assign.To>
+            <Assign.Value><InArgument x:TypeArguments="x:String"><Literal x:TypeArguments="x:String" Value="SUCCESS"/></InArgument></Assign.Value>
+          </Assign>
+
+          <ui:LogMessage DisplayName="[LOG] ✅ RDV Confirmé avec succès"
+            Level="Info" Message="[&quot;[RPA-RDV] ✅ Rendez-vous CONFIRMÉ pour &quot; + PatientNom + &quot; le &quot; + DateRDV + &quot; à &quot; + HeureRDV]"/>
+
+        </Sequence>
+      </If.Then>
+
+      <If.Else>
+        <Sequence DisplayName="[ELSE] Aucun créneau disponible">
+          <Assign DisplayName="[SET] Statut = No Slot">
+            <Assign.To><OutArgument x:TypeArguments="x:String"><Reference><x:Reference Name="TransactionStatus"/></Reference></OutArgument></Assign.To>
+            <Assign.Value><InArgument x:TypeArguments="x:String"><Literal x:TypeArguments="x:String" Value="NO_SLOT"/></InArgument></Assign.Value>
+          </Assign>
+          <ui:LogMessage DisplayName="[LOG] ⚠️ Aucun créneau disponible"
+            Level="Warn" Message="&quot;[RPA-RDV] ⚠️ Aucun créneau disponible – Notification secrétaire requise&quot;"/>
+          <ui:InvokeWorkflowFile DisplayName="[WF] NotifierSecretaire"
+            WorkflowFileName="Workflows\NotifierSecretaire.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">
+                <Reference><x:Reference Name="Config"/></Reference>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">
+                <Reference><x:Reference Name="PatientNom"/></Reference>
+              </InArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+        </Sequence>
+      </If.Else>
+
+    </If>
+
+    <!-- FIN DU PROCESSUS -->
+    <ui:LogMessage DisplayName="[LOG] === FIN DU PROCESSUS RPA ==="
+      Level="Info" Message="[&quot;[RPA-RDV] === Processus terminé. Statut : &quot; + TransactionStatus + &quot; ===&quot;]"/>
+
+  </Sequence>
+</Activity>

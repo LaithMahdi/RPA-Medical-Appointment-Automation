@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Activity mc:Ignorable="sap sap2010 sads"
+  x:Class="UiPath.RDV.EnregistrerRDVExcel"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+  xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
+  xmlns:ui="http://schemas.uipath.com/workflow/activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <x:Members>
+    <x:Property Name="in_Config"           Type="InArgument(scg:Dictionary(x:String, x:Object))"/>
+    <x:Property Name="in_PatientNom"       Type="InArgument(x:String)"/>
+    <x:Property Name="in_PatientTelephone" Type="InArgument(x:String)"/>
+    <x:Property Name="in_PatientMotif"     Type="InArgument(x:String)"/>
+    <x:Property Name="in_DateRDV"          Type="InArgument(x:String)"/>
+    <x:Property Name="in_HeureRDV"         Type="InArgument(x:String)"/>
+    <x:Property Name="out_RDVConfirme"     Type="OutArgument(x:Boolean)"/>
+  </x:Members>
+
+  <Sequence DisplayName="Enregistrer RDV dans Excel – Dossier Patient" sap:VirtualizedContainerService.HintSize="700,600">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="sd:DataTable"  Name="dt_RDV"/>
+      <Variable x:TypeArguments="sd:DataTable"  Name="dt_NouvelleRow"/>
+      <Variable x:TypeArguments="x:String"      Name="v_CheminRDV"/>
+      <Variable x:TypeArguments="x:String"      Name="v_Timestamp"/>
+    </Sequence.Variables>
+
+    <!-- Timestamp -->
+    <Assign DisplayName="[SET] Timestamp actuel">
+      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_Timestamp"/></OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="x:String">[DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")]</InArgument></Assign.Value>
+    </Assign>
+
+    <!-- Chemin fichier RDV -->
+    <Assign DisplayName="[SET] Chemin fichier RDV">
+      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_CheminRDV"/></OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelRDVPath"))]</InArgument></Assign.Value>
+    </Assign>
+
+    <ui:LogMessage Level="Info"
+      Message="[&quot;[RPA-RDV] Enregistrement RDV pour : &quot; + in_PatientNom + &quot; le &quot; + in_DateRDV + &quot; à &quot; + in_HeureRDV]"/>
+
+    <!-- Ouvrir et écrire dans Excel RDV -->
+    <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir Dossier RDV"
+      WorkbookPath="[v_CheminRDV]">
+      <ui:ExcelApplicationScope.Body>
+        <ActivityAction>
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
+          </ActivityAction.Argument>
+          <Sequence>
+
+            <!-- Lire la feuille existante -->
+            <ui:ReadRange DisplayName="[EXCEL] Lire feuille RendezVous"
+              SheetName="RendezVous" Range="" AddHeaders="True">
+              <ui:ReadRange.DataTable>
+                <OutArgument x:TypeArguments="sd:DataTable">
+                  <x:Reference Name="dt_RDV"/>
+                </OutArgument>
+              </ui:ReadRange.DataTable>
+            </ui:ReadRange>
+
+            <!-- Ajouter la nouvelle ligne -->
+            <InvokeMethod DisplayName="[DATA] Ajouter nouvelle ligne RDV"
+              MethodName="Rows.Add">
+              <InvokeMethod.TargetObject>
+                <InArgument x:TypeArguments="sd:DataTable">
+                  <x:Reference Name="dt_RDV"/>
+                </InArgument>
+              </InvokeMethod.TargetObject>
+              <InvokeMethod.Parameters>
+                <InArgument x:TypeArguments="x:Object[]">
+                  [New Object() {
+                    in_PatientNom,
+                    in_PatientTelephone,
+                    in_PatientMotif,
+                    in_DateRDV,
+                    in_HeureRDV,
+                    "Confirmé",
+                    v_Timestamp
+                  }]
+                </InArgument>
+              </InvokeMethod.Parameters>
+            </InvokeMethod>
+
+            <!-- Écrire la DataTable mise à jour -->
+            <ui:WriteRange DisplayName="[EXCEL] Écrire RendezVous mis à jour"
+              SheetName="RendezVous"
+              StartingCell="A1"
+              AddHeaders="True"
+              DataTable="[dt_RDV]"/>
+
+            <!-- Sauvegarder -->
+            <ui:ExcelSaveAS DisplayName="[EXCEL] Sauvegarder le fichier RDV" FileName="[v_CheminRDV]"/>
+
+          </Sequence>
+        </ActivityAction>
+      </ui:ExcelApplicationScope.Body>
+    </ui:ExcelApplicationScope>
+
+    <!-- Confirmer succès -->
+    <Assign DisplayName="[OUT] RDV Confirmé = True">
+      <Assign.To><OutArgument x:TypeArguments="x:Boolean"><x:Reference Name="out_RDVConfirme"/></OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="x:Boolean"><Literal x:TypeArguments="x:Boolean" Value="True"/></InArgument></Assign.Value>
+    </Assign>
+
+    <ui:LogMessage Level="Info" Message="&quot;[RPA-RDV] ✅ Rendez-vous enregistré avec succès dans Excel&quot;"/>
+
+  </Sequence>
+</Activity>

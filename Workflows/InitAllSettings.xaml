@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Activity mc:Ignorable="sap sap2010 sads"
+  x:Class="UiPath.RDV.InitAllSettings"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+  xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
+  xmlns:ui="http://schemas.uipath.com/workflow/activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <x:Members>
+    <x:Property Name="in_ConfigFilePath" Type="InArgument(x:String)"/>
+    <x:Property Name="out_Config"        Type="OutArgument(scg:Dictionary(x:String, x:Object))"/>
+  </x:Members>
+
+  <Sequence DisplayName="Initialisation – Chargement Config.xlsx">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="sd:DataTable"                              Name="dt_Config"/>
+      <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)"       Name="v_Config"/>
+    </Sequence.Variables>
+
+    <!-- Initialiser le dictionnaire -->
+    <Assign DisplayName="[INIT] Créer dictionnaire Config">
+      <Assign.To><OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)"><x:Reference Name="v_Config"/></OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)"><Literal x:TypeArguments="scg:Dictionary(x:String, x:Object)" Value="[New Dictionary(Of String, Object)()]"/></InArgument></Assign.Value>
+    </Assign>
+
+    <!-- Lire Config.xlsx -->
+    <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir Config.xlsx"
+      WorkbookPath="[in_ConfigFilePath]">
+      <ui:ExcelApplicationScope.Body>
+        <ActivityAction>
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
+          </ActivityAction.Argument>
+          <Sequence>
+            <ui:ReadRange DisplayName="[EXCEL] Lire feuille Config"
+              SheetName="Config" Range="" AddHeaders="True">
+              <ui:ReadRange.DataTable>
+                <OutArgument x:TypeArguments="sd:DataTable">
+                  <x:Reference Name="dt_Config"/>
+                </OutArgument>
+              </ui:ReadRange.DataTable>
+            </ui:ReadRange>
+          </Sequence>
+        </ActivityAction>
+      </ui:ExcelApplicationScope.Body>
+    </ui:ExcelApplicationScope>
+
+    <!-- Charger toutes les lignes clé/valeur dans le dictionnaire -->
+    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Charger paramètres Config"
+      Values="[dt_Config.Rows.Cast(Of sd:DataRow)()]">
+      <ActivityAction>
+        <ActivityAction.Argument>
+          <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row"/>
+        </ActivityAction.Argument>
+        <Sequence>
+          <If DisplayName="[IF] Clé non vide"
+            Condition="[Not String.IsNullOrEmpty(row(&quot;Cle&quot;).ToString.Trim)]">
+            <If.Then>
+              <Assign DisplayName="[SET] Ajouter clé dans Config">
+                <Assign.To><OutArgument x:TypeArguments="x:Object">[v_Config(row("Cle").ToString.Trim)]</OutArgument></Assign.To>
+                <Assign.Value><InArgument x:TypeArguments="x:Object">[row("Valeur")]</InArgument></Assign.Value>
+              </Assign>
+            </If.Then>
+          </If>
+        </Sequence>
+      </ActivityAction>
+    </ForEach>
+
+    <!-- Propager le dictionnaire en sortie -->
+    <Assign DisplayName="[OUT] Config chargée">
+      <Assign.To><OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)"><x:Reference Name="out_Config"/></OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)"><x:Reference Name="v_Config"/></InArgument></Assign.Value>
+    </Assign>
+
+    <ui:LogMessage Level="Info"
+      Message="[&quot;[RPA-RDV] ✅ Configuration chargée – &quot; + v_Config.Count.ToString + &quot; paramètres&quot;]"/>
+
+  </Sequence>
+</Activity>

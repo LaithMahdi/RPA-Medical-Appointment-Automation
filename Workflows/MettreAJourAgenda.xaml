@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Activity mc:Ignorable="sap sap2010 sads"
+  x:Class="UiPath.RDV.MettreAJourAgenda"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+  xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
+  xmlns:ui="http://schemas.uipath.com/workflow/activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <x:Members>
+    <x:Property Name="in_Config"      Type="InArgument(scg:Dictionary(x:String, x:Object))"/>
+    <x:Property Name="in_DateRDV"     Type="InArgument(x:String)"/>
+    <x:Property Name="in_HeureRDV"    Type="InArgument(x:String)"/>
+    <x:Property Name="in_PatientNom"  Type="InArgument(x:String)"/>
+  </x:Members>
+
+  <Sequence DisplayName="Mettre à Jour Agenda Médecin – Excel" sap:VirtualizedContainerService.HintSize="700,550">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="sd:DataTable" Name="dt_Agenda"/>
+      <Variable x:TypeArguments="x:String"     Name="v_CheminAgenda"/>
+      <Variable x:TypeArguments="x:Int32"      Name="v_RowIndex" Default="-1"/>
+    </Sequence.Variables>
+
+    <Assign DisplayName="[SET] Chemin Agenda">
+      <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="v_CheminAgenda"/></OutArgument></Assign.To>
+      <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelAgendaPath"))]</InArgument></Assign.Value>
+    </Assign>
+
+    <ui:LogMessage Level="Info"
+      Message="[&quot;[RPA-RDV] Mise à jour agenda pour : &quot; + in_DateRDV + &quot; &quot; + in_HeureRDV + &quot; – Patient : &quot; + in_PatientNom]"/>
+
+    <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir Agenda Médecin"
+      WorkbookPath="[v_CheminAgenda]">
+      <ui:ExcelApplicationScope.Body>
+        <ActivityAction>
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
+          </ActivityAction.Argument>
+          <Sequence>
+
+            <ui:ReadRange DisplayName="[EXCEL] Lire Agenda" SheetName="Agenda" Range="" AddHeaders="True">
+              <ui:ReadRange.DataTable>
+                <OutArgument x:TypeArguments="sd:DataTable">
+                  <x:Reference Name="dt_Agenda"/>
+                </OutArgument>
+              </ui:ReadRange.DataTable>
+            </ui:ReadRange>
+
+            <!-- Trouver la ligne correspondant à la date et heure choisies -->
+            <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Trouver ligne agenda"
+              Values="[dt_Agenda.Rows.Cast(Of sd:DataRow)()]">
+              <ActivityAction>
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row"/>
+                </ActivityAction.Argument>
+                <If DisplayName="[IF] Date et Heure correspondent"
+                  Condition="[row(&quot;Date&quot;).ToString.Trim = in_DateRDV AndAlso row(&quot;Heure&quot;).ToString.Trim = in_HeureRDV]">
+                  <If.Then>
+                    <Sequence>
+                      <!-- Mettre à jour le statut et le nom patient -->
+                      <Assign DisplayName="[SET] Statut = Réservé">
+                        <Assign.To><OutArgument x:TypeArguments="x:Object">[row("Statut")]</OutArgument></Assign.To>
+                        <Assign.Value><InArgument x:TypeArguments="x:String"><Literal x:TypeArguments="x:String" Value="Réservé"/></InArgument></Assign.Value>
+                      </Assign>
+                      <Assign DisplayName="[SET] Patient = Nom">
+                        <Assign.To><OutArgument x:TypeArguments="x:Object">[row("Patient")]</OutArgument></Assign.To>
+                        <Assign.Value><InArgument x:TypeArguments="x:String"><x:Reference Name="in_PatientNom"/></InArgument></Assign.Value>
+                      </Assign>
+                      <ui:LogMessage Level="Info"
+                        Message="[&quot;[RPA-RDV] ✅ Créneau &quot; + in_DateRDV + &quot; &quot; + in_HeureRDV + &quot; marqué Réservé pour &quot; + in_PatientNom]"/>
+                    </Sequence>
+                  </If.Then>
+                </If>
+              </ActivityAction>
+            </ForEach>
+
+            <!-- Réécrire l'agenda mis à jour -->
+            <ui:WriteRange DisplayName="[EXCEL] Réécrire Agenda mis à jour"
+              SheetName="Agenda" StartingCell="A1" AddHeaders="True" DataTable="[dt_Agenda]"/>
+
+            <ui:Save DisplayName="[EXCEL] Sauvegarder Agenda"/>
+
+          </Sequence>
+        </ActivityAction>
+      </ui:ExcelApplicationScope.Body>
+    </ui:ExcelApplicationScope>
+
+    <ui:LogMessage Level="Info" Message="&quot;[RPA-RDV] ✅ Agenda médecin mis à jour avec succès&quot;"/>
+
+  </Sequence>
+</Activity>

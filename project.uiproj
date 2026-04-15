@@ -1,0 +1,6 @@
+{
+  "Name": "RDV-Medical-RPA",
+  "ProjectType": "Process",
+  "Description": "Robot RPA – Automatisation de la Prise de Rendez-vous Médical (TO-BE) | UiPath Studio Project | Cabinet Médical",
+  "MainFile": "Main/Main.xaml"
+}

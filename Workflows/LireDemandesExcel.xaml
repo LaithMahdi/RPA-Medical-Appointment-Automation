@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Activity mc:Ignorable="sap sap2010 sads"
+  x:Class="UiPath.RDV.LireDemandesExcel"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+  xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
+  xmlns:ui="http://schemas.uipath.com/workflow/activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <x:Members>
+    <x:Property Name="in_Config"         Type="InArgument(scg:Dictionary(x:String, x:Object))"/>
+    <x:Property Name="out_PatientNom"    Type="OutArgument(x:String)"/>
+    <x:Property Name="out_PatientTelephone" Type="OutArgument(x:String)"/>
+    <x:Property Name="out_PatientMotif"  Type="OutArgument(x:String)"/>
+  </x:Members>
+
+  <Sequence DisplayName="Lire Demandes Excel – Patients" sap:VirtualizedContainerService.HintSize="700,600">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="sd:DataTable"  Name="dt_Demandes"/>
+      <Variable x:TypeArguments="x:String"      Name="v_CheminExcel"/>
+      <Variable x:TypeArguments="x:Int32"       Name="v_LigneIndex" Default="0"/>
+    </Sequence.Variables>
+
+    <!-- Récupérer chemin Excel depuis Config -->
+    <Assign DisplayName="[SET] Chemin fichier Excel Demandes">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">
+          <x:Reference Name="v_CheminExcel"/>
+        </OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">
+          [CStr(in_Config("ExcelDemandesPath"))]
+        </InArgument>
+      </Assign.Value>
+    </Assign>
+
+    <!-- Lire le fichier Excel Demandes -->
+    <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir fichier Demandes" WorkbookPath="[v_CheminExcel]">
+      <ui:ExcelApplicationScope.Body>
+        <ActivityAction>
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
+          </ActivityAction.Argument>
+          <Sequence>
+            <ui:ReadRange DisplayName="[EXCEL] Lire feuille Demandes"
+              SheetName="Demandes"
+              Range=""
+              AddHeaders="True">
+              <ui:ReadRange.DataTable>
+                <OutArgument x:TypeArguments="sd:DataTable">
+                  <x:Reference Name="dt_Demandes"/>
+                </OutArgument>
+              </ui:ReadRange.DataTable>
+            </ui:ReadRange>
+          </Sequence>
+        </ActivityAction>
+      </ui:ExcelApplicationScope.Body>
+    </ui:ExcelApplicationScope>
+
+    <!-- Trouver la première ligne avec statut "En attente" -->
+    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Parcourir les demandes"
+      Values="[dt_Demandes.Select(&quot;Statut = 'En attente'&quot;)]">
+      <ActivityAction>
+        <ActivityAction.Argument>
+          <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row"/>
+        </ActivityAction.Argument>
+        <Sequence DisplayName="[ROW] Extraire informations patient">
+
+          <Assign DisplayName="[SET] Nom patient">
+            <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="out_PatientNom"/></OutArgument></Assign.To>
+            <Assign.Value><InArgument x:TypeArguments="x:String">[row("Nom").ToString.Trim]</InArgument></Assign.Value>
+          </Assign>
+
+          <Assign DisplayName="[SET] Téléphone patient">
+            <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="out_PatientTelephone"/></OutArgument></Assign.To>
+            <Assign.Value><InArgument x:TypeArguments="x:String">[row("Telephone").ToString.Trim]</InArgument></Assign.Value>
+          </Assign>
+
+          <Assign DisplayName="[SET] Motif consultation">
+            <Assign.To><OutArgument x:TypeArguments="x:String"><x:Reference Name="out_PatientMotif"/></OutArgument></Assign.To>
+            <Assign.Value><InArgument x:TypeArguments="x:String">[row("Motif").ToString.Trim]</InArgument></Assign.Value>
+          </Assign>
+
+          <ui:LogMessage Level="Info"
+            Message="[&quot;[RPA-RDV] Patient lu : &quot; + out_PatientNom + &quot; | Tél : &quot; + out_PatientTelephone + &quot; | Motif : &quot; + out_PatientMotif]"/>
+
+          <!-- Sortir après la première demande en attente -->
+          <ui:Break DisplayName="[BREAK] Première demande récupérée"/>
+
+        </Sequence>
+      </ActivityAction>
+    </ForEach>
+
+  </Sequence>
+</Activity>
