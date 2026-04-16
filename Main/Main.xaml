@@ -17,14 +17,17 @@
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
     <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
       <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
       <AssemblyReference>System.Linq</AssemblyReference>
       <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
       <AssemblyReference>UiPath.System.Activities</AssemblyReference>
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="[MAIN] Processus Automatisé – Prise de RDV Médical" sap:VirtualizedContainerService.HintSize="900,800" sap2010:WorkflowViewState.IdRef="Sequence_3">
+  <Sequence DisplayName="[MAIN] Processus Automatisé – Prise de RDV Médical" sap:VirtualizedContainerService.HintSize="1281,1424" sap2010:WorkflowViewState.IdRef="Sequence_3">
     <Sequence.Variables>
       <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)" Name="Config" />
       <Variable x:TypeArguments="x:String" Name="PatientNom">
@@ -70,15 +73,15 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:LogMessage DisplayName="[LOG] Démarrage du Robot RPA – Prise de RDV" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] === Démarrage du processus de prise de rendez-vous médical ===&quot;]" />
-    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[INIT] Chargement de la configuration" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Workflows\InitAllSettings.xaml">
+    <ui:LogMessage DisplayName="[LOG] Démarrage du Robot RPA – Prise de RDV" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] === Démarrage du processus de prise de rendez-vous médical ===&quot;]" />
+    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[INIT] Chargement de la configuration" sap:VirtualizedContainerService.HintSize="450,177" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Workflows\InitAllSettings.xaml">
       <ui:InvokeWorkflowFile.Arguments>
         <InArgument x:TypeArguments="x:String" x:Key="in_ConfigFilePath">Data\Config.xlsx</InArgument>
         <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="out_Config">[Config]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
-    <ui:LogMessage DisplayName="[LOG] Étape 1 – Lecture des demandes patients" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 1 : Lecture du fichier Excel des demandes&quot;]" />
-    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] LireDemandesExcel" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Workflows\LireDemandesExcel.xaml">
+    <ui:LogMessage DisplayName="[LOG] Étape 1 – Lecture des demandes patients" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 1 : Lecture du fichier Excel des demandes&quot;]" />
+    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] LireDemandesExcel" sap:VirtualizedContainerService.HintSize="450,177" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Workflows\LireDemandesExcel.xaml">
       <ui:InvokeWorkflowFile.Arguments>
         <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientNom">[PatientNom]</OutArgument>
@@ -86,8 +89,8 @@
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientMotif">[PatientMotif]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
-    <ui:LogMessage DisplayName="[LOG] Étape 2 – Vérification disponibilité médecin" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin&quot;]" />
-    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] VerifierDisponibiliteAgenda" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Workflows\VerifierDisponibiliteAgenda.xaml">
+    <ui:LogMessage DisplayName="[LOG] Étape 2 – Vérification disponibilité médecin" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin&quot;]" />
+    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] VerifierDisponibiliteAgenda" sap:VirtualizedContainerService.HintSize="450,177" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Workflows\VerifierDisponibiliteAgenda.xaml">
       <ui:InvokeWorkflowFile.Arguments>
         <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
         <OutArgument x:TypeArguments="x:String" x:Key="out_DateRDV">[DateRDV]</OutArgument>
@@ -95,7 +98,7 @@
         <OutArgument x:TypeArguments="x:Boolean" x:Key="out_DisponibiliteTrouvee">[DisponibiliteTrouvee]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
-    <If Condition="[DisponibiliteTrouvee]" DisplayName="[IF] Créneau disponible trouvé ?" sap2010:WorkflowViewState.IdRef="If_1">
+    <If Condition="[DisponibiliteTrouvee]" DisplayName="[IF] Créneau disponible trouvé ?" sap:VirtualizedContainerService.HintSize="450,179" sap2010:WorkflowViewState.IdRef="If_1">
       <If.Then>
         <Sequence DisplayName="[THEN] Enregistrement et Confirmation" sap2010:WorkflowViewState.IdRef="Sequence_1">
           <ui:LogMessage DisplayName="[LOG] Étape 3 – Enregistrement du rendez-vous" sap2010:WorkflowViewState.IdRef="LogMessage_4" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 3 : Enregistrement du rendez-vous dans Excel&quot;]" />
@@ -159,6 +162,6 @@
         </Sequence>
       </If.Else>
     </If>
-    <ui:LogMessage DisplayName="[LOG] === FIN DU PROCESSUS RPA ===" sap2010:WorkflowViewState.IdRef="LogMessage_9" Level="Info" Message="[&quot;[RPA-RDV] === Processus terminé. Statut : &quot; + TransactionStatus + &quot; ===&quot;]" />
+    <ui:LogMessage DisplayName="[LOG] === FIN DU PROCESSUS RPA ===" sap:VirtualizedContainerService.HintSize="450,166" sap2010:WorkflowViewState.IdRef="LogMessage_9" Level="Info" Message="[&quot;[RPA-RDV] === Processus terminé. Statut : &quot; + TransactionStatus + &quot; ===&quot;]" />
   </Sequence>
 </Activity>

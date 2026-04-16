@@ -1,100 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Activity mc:Ignorable="sap sap2010 sads"
-  x:Class="UiPath.RDV.EnvoyerNotificationPatient"
-  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
-  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
-  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
-  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
-  xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
-  xmlns:ui="http://schemas.uipath.com/workflow/activities"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
+<Activity mc:Ignorable="sap sap2010" x:Class="UiPath.RDV.EnvoyerNotificationPatient" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="in_Config"      Type="InArgument(scg:Dictionary(x:String, x:Object))"/>
-    <x:Property Name="in_PatientNom"  Type="InArgument(x:String)"/>
-    <x:Property Name="in_DateRDV"     Type="InArgument(x:String)"/>
-    <x:Property Name="in_HeureRDV"    Type="InArgument(x:String)"/>
+    <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="in_PatientNom" Type="InArgument(x:String)" />
+    <x:Property Name="in_DateRDV" Type="InArgument(x:String)" />
+    <x:Property Name="in_HeureRDV" Type="InArgument(x:String)" />
   </x:Members>
-
-  <Sequence DisplayName="Envoyer Notification Confirmation Patient" sap:VirtualizedContainerService.HintSize="700,500">
+  <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Primitives</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Data.Common</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Platform</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="Envoyer Notification Confirmation Patient" sap:VirtualizedContainerService.HintSize="700,500" sap2010:WorkflowViewState.IdRef="Sequence_2">
     <Sequence.Variables>
-      <Variable x:TypeArguments="x:String" Name="v_SujetEmail"/>
-      <Variable x:TypeArguments="x:String" Name="v_CorpsEmail"/>
-      <Variable x:TypeArguments="x:String" Name="v_EmailExpediteur"/>
-      <Variable x:TypeArguments="x:String" Name="v_EmailDestinataire"/>
-      <Variable x:TypeArguments="x:String" Name="v_CheminLog"/>
+      <Variable x:TypeArguments="x:String" Name="v_SujetEmail" />
+      <Variable x:TypeArguments="x:String" Name="v_CorpsEmail" />
+      <Variable x:TypeArguments="x:String" Name="v_EmailExpediteur" />
+      <Variable x:TypeArguments="x:String" Name="v_EmailDestinataire" />
+      <Variable x:TypeArguments="x:String" Name="v_CheminLog" />
     </Sequence.Variables>
-
-    <!-- Construire l'email -->
-    <Assign DisplayName="[SET] Expéditeur email">
-      <Assign.To><OutArgument x:TypeArguments="x:String">[v_EmailExpediteur]</OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailCabinet"))]</InArgument></Assign.Value>
-    </Assign>
-
-    <Assign DisplayName="[SET] Destinataire email (lookup depuis dossier)">
-      <Assign.To><OutArgument x:TypeArguments="x:String">[v_EmailDestinataire]</OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailTestPatient"))]</InArgument></Assign.Value>
-    </Assign>
-
-    <Assign DisplayName="[SET] Sujet email">
-      <Assign.To><OutArgument x:TypeArguments="x:String">[v_SujetEmail]</OutArgument></Assign.To>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Assign DisplayName="[SET] Expéditeur email" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[v_EmailExpediteur]</OutArgument>
+      </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">
-          ["[CABINET MÉDICAL] Confirmation de votre rendez-vous – " + in_DateRDV + " à " + in_HeureRDV]
-        </InArgument>
+        <InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailCabinet"))]</InArgument>
       </Assign.Value>
     </Assign>
-
-    <Assign DisplayName="[SET] Corps email">
-      <Assign.To><OutArgument x:TypeArguments="x:String">[v_CorpsEmail]</OutArgument></Assign.To>
+    <Assign DisplayName="[SET] Destinataire email (lookup depuis dossier)" sap2010:WorkflowViewState.IdRef="Assign_2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[v_EmailDestinataire]</OutArgument>
+      </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">
-          ["Bonjour " + in_PatientNom + "," + Environment.NewLine + Environment.NewLine +
-           "Votre rendez-vous médical est confirmé :" + Environment.NewLine +
-           "  📅 Date  : " + in_DateRDV + Environment.NewLine +
-           "  🕐 Heure : " + in_HeureRDV + Environment.NewLine + Environment.NewLine +
-           "Merci de vous présenter 5 minutes avant l'heure prévue." + Environment.NewLine +
-           "En cas d'empêchement, veuillez nous contacter au plus tôt." + Environment.NewLine + Environment.NewLine +
-           "Cordialement," + Environment.NewLine +
-           "Le Cabinet Médical" + Environment.NewLine +
-           "🤖 Message généré automatiquement par le système RPA"]
-        </InArgument>
+        <InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailTestPatient"))]</InArgument>
       </Assign.Value>
     </Assign>
-
-    <!-- Fallback log in case SMTP activity package/type is unavailable -->
-    <ui:LogMessage DisplayName="[EMAIL] Simulation envoi confirmation"
-      Level="Info"
-      Message="[&quot;[RPA-RDV] (Simulation) Email prêt pour : &quot; + v_EmailDestinataire + &quot; | Sujet: &quot; + v_SujetEmail]"/>
-
-    <ui:LogMessage Level="Info"
-      Message="[&quot;[RPA-RDV] ✅ Email de confirmation envoyé à : &quot; + v_EmailDestinataire]"/>
-
-    <!-- Logger dans fichier log Excel -->
-    <Assign DisplayName="[SET] Chemin Log">
-      <Assign.To><OutArgument x:TypeArguments="x:String">[v_CheminLog]</OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelLogPath"))]</InArgument></Assign.Value>
+    <Assign DisplayName="[SET] Sujet email" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[v_SujetEmail]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">["[CABINET MÉDICAL] Confirmation de votre rendez-vous – " + in_DateRDV + " à " + in_HeureRDV]</InArgument>
+      </Assign.Value>
     </Assign>
-
-    <ui:ExcelApplicationScope DisplayName="[EXCEL] Écrire dans Log" WorkbookPath="[v_CheminLog]">
+    <Assign DisplayName="[SET] Corps email" sap2010:WorkflowViewState.IdRef="Assign_4">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[v_CorpsEmail]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">["Bonjour " + in_PatientNom + "," + Environment.NewLine + Environment.NewLine + "Votre rendez-vous médical est confirmé :" + Environment.NewLine + " 📅 Date : " + in_DateRDV + Environment.NewLine + " 🕐 Heure : " + in_HeureRDV + Environment.NewLine + Environment.NewLine + "Merci de vous présenter 5 minutes avant l'heure prévue." + Environment.NewLine + "En cas d'empêchement, veuillez nous contacter au plus tôt." + Environment.NewLine + Environment.NewLine + "Cordialement," + Environment.NewLine + "Le Cabinet Médical" + Environment.NewLine + "🤖 Message généré automatiquement par le système RPA"]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:LogMessage DisplayName="[EMAIL] Simulation envoi confirmation" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] (Simulation) Email prêt pour : &quot; + v_EmailDestinataire + &quot; | Sujet: &quot; + v_SujetEmail]" />
+    <ui:LogMessage sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;[RPA-RDV] ✅ Email de confirmation envoyé à : &quot; + v_EmailDestinataire]" />
+    <Assign DisplayName="[SET] Chemin Log" sap2010:WorkflowViewState.IdRef="Assign_5">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[v_CheminLog]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelLogPath"))]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Écrire dans Log" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" SensitivityOperation="None" WorkbookPath="[v_CheminLog]">
       <ui:ExcelApplicationScope.Body>
         <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
-            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook" />
           </ActivityAction.Argument>
-          <Sequence>
-            <ui:AppendRange DisplayName="[EXCEL] Ajouter ligne dans Log"
-              SheetName="Log"
-              DataTable="[New System.Data.DataTable() With {
-                .Columns = {New System.Data.DataColumn(&quot;Timestamp&quot;), New System.Data.DataColumn(&quot;Patient&quot;), New System.Data.DataColumn(&quot;Date&quot;), New System.Data.DataColumn(&quot;Heure&quot;), New System.Data.DataColumn(&quot;Statut&quot;)},
-                .Rows = { {DateTime.Now.ToString(&quot;dd/MM/yyyy HH:mm:ss&quot;), in_PatientNom, in_DateRDV, in_HeureRDV, &quot;Email Envoyé&quot;} }
-              }]"/>
+          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_1">
+            <ui:AppendRange DataTable="[New System.Data.DataTable() With {                 .Columns = {New System.Data.DataColumn(&quot;Timestamp&quot;), New System.Data.DataColumn(&quot;Patient&quot;), New System.Data.DataColumn(&quot;Date&quot;), New System.Data.DataColumn(&quot;Heure&quot;), New System.Data.DataColumn(&quot;Statut&quot;)},                 .Rows = { {DateTime.Now.ToString(&quot;dd/MM/yyyy HH:mm:ss&quot;), in_PatientNom, in_DateRDV, in_HeureRDV, &quot;Email Envoyé&quot;} }               }]" DisplayName="[EXCEL] Ajouter ligne dans Log" sap2010:WorkflowViewState.IdRef="AppendRange_1" SheetName="Log" />
           </Sequence>
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>
     </ui:ExcelApplicationScope>
-
   </Sequence>
 </Activity>

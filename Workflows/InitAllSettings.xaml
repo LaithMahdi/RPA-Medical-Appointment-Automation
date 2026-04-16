@@ -1,82 +1,133 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Activity mc:Ignorable="sap sap2010 sads"
-  x:Class="UiPath.RDV.InitAllSettings"
-  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
-  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
-  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
-  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
-  xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
-  xmlns:ui="http://schemas.uipath.com/workflow/activities"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
+<Activity mc:Ignorable="sap sap2010" x:Class="UiPath.RDV.InitAllSettings" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="in_ConfigFilePath" Type="InArgument(x:String)"/>
-    <x:Property Name="out_Config"        Type="OutArgument(scg:Dictionary(x:String, x:Object))"/>
+    <x:Property Name="in_ConfigFilePath" Type="InArgument(x:String)" />
+    <x:Property Name="out_Config" Type="OutArgument(scg:Dictionary(x:String, x:Object))" />
   </x:Members>
-
-  <Sequence DisplayName="Initialisation – Chargement Config.xlsx">
+  <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Activities.Statements</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.Collections.NonGeneric</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Primitives</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Data.Common</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.Linq.Async</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Private.ServiceModel</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Platform</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Workflow</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="Initialisation – Chargement Config.xlsx" sap:VirtualizedContainerService.HintSize="1281,1480" sap2010:WorkflowViewState.IdRef="Sequence_3">
     <Sequence.Variables>
-      <Variable x:TypeArguments="sd:DataTable"                              Name="dt_Config"/>
-      <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)"       Name="v_Config"/>
+      <Variable x:TypeArguments="sd:DataTable" Name="dt_Config" />
+      <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)" Name="v_Config" />
     </Sequence.Variables>
-
-    <!-- Initialiser le dictionnaire -->
-    <Assign DisplayName="[INIT] Créer dictionnaire Config">
-      <Assign.To><OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[v_Config]</OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[New Dictionary(Of String, Object)()]</InArgument></Assign.Value>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Assign DisplayName="[INIT] Créer dictionnaire Config" sap:VirtualizedContainerService.HintSize="536,175" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[v_Config]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[New Dictionary(Of String, Object)()]</InArgument>
+      </Assign.Value>
     </Assign>
-
-    <!-- Lire Config.xlsx -->
-    <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir Config.xlsx"
-      WorkbookPath="[in_ConfigFilePath]">
+    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Ouvrir Config.xlsx" sap:VirtualizedContainerService.HintSize="536,313" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" SensitivityOperation="None" WorkbookPath="[in_ConfigFilePath]">
       <ui:ExcelApplicationScope.Body>
         <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
-            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook" />
           </ActivityAction.Argument>
-          <Sequence>
-            <ui:ReadRange DisplayName="[EXCEL] Lire feuille Config"
-              SheetName="Config" Range="" AddHeaders="True">
-              <ui:ReadRange.DataTable>
-                <OutArgument x:TypeArguments="sd:DataTable">[dt_Config]</OutArgument>
-              </ui:ReadRange.DataTable>
+          <Sequence sap:VirtualizedContainerService.HintSize="450,171" sap2010:WorkflowViewState.IdRef="Sequence_1">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:ReadRange AddHeaders="True" DataTable="[dt_Config]" DisplayName="[EXCEL] Lire feuille Config" sap:VirtualizedContainerService.HintSize="416,111" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Config" WorkbookPath="Data\Config.xlsx">
+              <ui:ReadRange.Range>
+                <InArgument x:TypeArguments="x:String">
+                  <Literal x:TypeArguments="x:String" Value="" />
+                </InArgument>
+              </ui:ReadRange.Range>
             </ui:ReadRange>
           </Sequence>
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>
     </ui:ExcelApplicationScope>
-
-    <!-- Charger toutes les lignes clé/valeur dans le dictionnaire -->
-    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Charger paramètres Config"
-      Values="[dt_Config.Rows.Cast(Of sd:DataRow)()]">
+    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Charger paramètres Config" sap:VirtualizedContainerService.HintSize="536,628" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_Config.Rows.Cast(Of sd:DataRow)()]">
       <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>
-          <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row"/>
+          <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
         </ActivityAction.Argument>
-        <Sequence>
-          <If DisplayName="[IF] Clé non vide"
-            Condition="[Not String.IsNullOrEmpty(row(&quot;Cle&quot;).ToString.Trim)]">
+        <Sequence sap:VirtualizedContainerService.HintSize="486,445" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <If Condition="[Not String.IsNullOrEmpty(row(&quot;Cle&quot;).ToString.Trim)]" DisplayName="[IF] Clé non vide" sap:VirtualizedContainerService.HintSize="452,385" sap2010:WorkflowViewState.IdRef="If_1">
             <If.Then>
-              <Assign DisplayName="[SET] Ajouter clé dans Config">
-                <Assign.To><OutArgument x:TypeArguments="x:Object">[v_Config(row("Cle").ToString.Trim)]</OutArgument></Assign.To>
-                <Assign.Value><InArgument x:TypeArguments="x:Object">[row("Valeur")]</InArgument></Assign.Value>
+              <Assign DisplayName="[SET] Ajouter clé dans Config" sap:VirtualizedContainerService.HintSize="450,143" sap2010:WorkflowViewState.IdRef="Assign_2">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Object">[v_Config(row("Cle").ToString.Trim)]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Object">[row("Valeur")]</InArgument>
+                </Assign.Value>
               </Assign>
             </If.Then>
+            <If.Else>
+              <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="450,90" sap2010:WorkflowViewState.IdRef="Sequence_4">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+              </Sequence>
+            </If.Else>
           </If>
         </Sequence>
       </ActivityAction>
     </ForEach>
-
-    <!-- Propager le dictionnaire en sortie -->
-    <Assign DisplayName="[OUT] Config chargée">
-      <Assign.To><OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[out_Config]</OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[v_Config]</InArgument></Assign.Value>
+    <Assign DisplayName="[OUT] Config chargée" sap:VirtualizedContainerService.HintSize="536,175" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[out_Config]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[v_Config]</InArgument>
+      </Assign.Value>
     </Assign>
-
-    <ui:LogMessage Level="Info"
-      Message="[&quot;[RPA-RDV] ✅ Configuration chargée – &quot; + v_Config.Count.ToString + &quot; paramètres&quot;]"/>
-
+    <ui:LogMessage sap:VirtualizedContainerService.HintSize="536,166" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] ✅ Configuration chargée – &quot; + v_Config.Count.ToString + &quot; paramètres&quot;]" />
   </Sequence>
 </Activity>

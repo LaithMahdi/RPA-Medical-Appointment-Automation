@@ -50,5 +50,10 @@
   "UiPath.UIAutomationNext.Activities.ClosePopup.PopupAppearTimeout": "30",
   "UiPath.UIAutomationNext.Activities.Logging.TargetSearchLogLevel": "Off",
   "UiPath.UIAutomationNext.Activities.Logging.TargetSearchPerformanceLogLevel": "Off",
-  "UiPath.UIAutomationNext.Activities.Logging.AuditLogLevel": "Trace"
+  "UiPath.UIAutomationNext.Activities.Logging.AuditLogLevel": "Trace",
+  "UiPath.UIAutomationNext.Activities.Generic.UIATraceRetention": "7",
+  "UiPath.UIAutomationNext.Activities.UITask.UITaskTraceAttachMode": "OnFailure",
+  "UiPath.UIAutomationNext.Activities.SemanticActivities.ExtractUIDataAgentType": "GeminiFlash25",
+  "UiPath.UIAutomationNext.Activities.SemanticActivities.ExtractUIDataIsDOMEnabled": "True",
+  "UiPath.UIAutomationNext.Activities.Logging.EnableActivityTracing": "False"
 }

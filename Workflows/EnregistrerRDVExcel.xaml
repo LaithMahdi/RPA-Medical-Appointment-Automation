@@ -1,107 +1,119 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Activity mc:Ignorable="sap sap2010 sads"
-  x:Class="UiPath.RDV.EnregistrerRDVExcel"
-  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
-  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
-  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
-  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
-  xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
-  xmlns:ui="http://schemas.uipath.com/workflow/activities"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
+<Activity mc:Ignorable="sap sap2010" x:Class="UiPath.RDV.EnregistrerRDVExcel" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="in_Config"           Type="InArgument(scg:Dictionary(x:String, x:Object))"/>
-    <x:Property Name="in_PatientNom"       Type="InArgument(x:String)"/>
-    <x:Property Name="in_PatientTelephone" Type="InArgument(x:String)"/>
-    <x:Property Name="in_PatientMotif"     Type="InArgument(x:String)"/>
-    <x:Property Name="in_DateRDV"          Type="InArgument(x:String)"/>
-    <x:Property Name="in_HeureRDV"         Type="InArgument(x:String)"/>
-    <x:Property Name="out_RDVConfirme"     Type="OutArgument(x:Boolean)"/>
+    <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="in_PatientNom" Type="InArgument(x:String)" />
+    <x:Property Name="in_PatientTelephone" Type="InArgument(x:String)" />
+    <x:Property Name="in_PatientMotif" Type="InArgument(x:String)" />
+    <x:Property Name="in_DateRDV" Type="InArgument(x:String)" />
+    <x:Property Name="in_HeureRDV" Type="InArgument(x:String)" />
+    <x:Property Name="out_RDVConfirme" Type="OutArgument(x:Boolean)" />
   </x:Members>
-
-  <Sequence DisplayName="Enregistrer RDV dans Excel – Dossier Patient" sap:VirtualizedContainerService.HintSize="700,600">
+  <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Linq.Expressions</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Primitives</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Data.Common</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Platform</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities.Design</AssemblyReference>
+      <AssemblyReference>System.Memory.Data</AssemblyReference>
+      <AssemblyReference>System.Console</AssemblyReference>
+      <AssemblyReference>System.Security.Permissions</AssemblyReference>
+      <AssemblyReference>System.Configuration.ConfigurationManager</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.Private.Uri</AssemblyReference>
+      <AssemblyReference>System.Linq.Expressions</AssemblyReference>
+      <AssemblyReference>System.Private.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.Private.DataContractSerialization</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="Enregistrer RDV dans Excel – Dossier Patient" sap:VirtualizedContainerService.HintSize="1281,1588" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
-      <Variable x:TypeArguments="sd:DataTable"  Name="dt_RDV"/>
-      <Variable x:TypeArguments="sd:DataTable"  Name="dt_NouvelleRow"/>
-      <Variable x:TypeArguments="x:String"      Name="v_CheminRDV"/>
-      <Variable x:TypeArguments="x:String"      Name="v_Timestamp"/>
+      <Variable x:TypeArguments="sd:DataTable" Name="dt_RDV" />
+      <Variable x:TypeArguments="sd:DataTable" Name="dt_NouvelleRow" />
+      <Variable x:TypeArguments="x:String" Name="v_CheminRDV" />
+      <Variable x:TypeArguments="x:String" Name="v_Timestamp" />
     </Sequence.Variables>
-
-    <!-- Timestamp -->
-    <Assign DisplayName="[SET] Timestamp actuel">
-      <Assign.To><OutArgument x:TypeArguments="x:String">[v_Timestamp]</OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="x:String">[DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")]</InArgument></Assign.Value>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Assign DisplayName="[SET] Timestamp actuel" sap:VirtualizedContainerService.HintSize="484,175" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[v_Timestamp]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")]</InArgument>
+      </Assign.Value>
     </Assign>
-
-    <!-- Chemin fichier RDV -->
-    <Assign DisplayName="[SET] Chemin fichier RDV">
-      <Assign.To><OutArgument x:TypeArguments="x:String">[v_CheminRDV]</OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelRDVPath"))]</InArgument></Assign.Value>
+    <Assign DisplayName="[SET] Chemin fichier RDV" sap:VirtualizedContainerService.HintSize="484,175" sap2010:WorkflowViewState.IdRef="Assign_2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[v_CheminRDV]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelRDVPath"))]</InArgument>
+      </Assign.Value>
     </Assign>
-
-    <ui:LogMessage Level="Info"
-      Message="[&quot;[RPA-RDV] Enregistrement RDV pour : &quot; + in_PatientNom + &quot; le &quot; + in_DateRDV + &quot; à &quot; + in_HeureRDV]"/>
-
-    <!-- Ouvrir et écrire dans Excel RDV -->
-    <ui:ExcelApplicationScope DisplayName="[EXCEL] Ouvrir Dossier RDV"
-      WorkbookPath="[v_CheminRDV]">
+    <ui:LogMessage sap:VirtualizedContainerService.HintSize="484,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Enregistrement RDV pour : &quot; + in_PatientNom + &quot; le &quot; + in_DateRDV + &quot; à &quot; + in_HeureRDV]" />
+    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Ouvrir Dossier RDV" sap:VirtualizedContainerService.HintSize="484,699" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" SensitivityOperation="None" WorkbookPath="[v_CheminRDV]">
       <ui:ExcelApplicationScope.Body>
         <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
-            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook"/>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook" />
           </ActivityAction.Argument>
-          <Sequence>
-
-            <!-- Lire la feuille existante -->
-            <ui:ReadRange DisplayName="[EXCEL] Lire feuille RendezVous"
-              SheetName="RendezVous" Range="" AddHeaders="True">
-              <ui:ReadRange.DataTable>
-                <OutArgument x:TypeArguments="sd:DataTable">[dt_RDV]</OutArgument>
-              </ui:ReadRange.DataTable>
-            </ui:ReadRange>
-
-            <!-- Ajouter la nouvelle ligne -->
-            <InvokeMethod DisplayName="[DATA] Ajouter nouvelle ligne RDV"
-              MethodName="Rows.Add">
-              <InvokeMethod.TargetObject>
-                <InArgument x:TypeArguments="x:Object">[dt_RDV.Rows]</InArgument>
-              </InvokeMethod.TargetObject>
-              <InvokeMethod.Parameters>
-                <InArgument x:TypeArguments="x:Object[]">
-                  [New Object() {
-                    in_PatientNom,
-                    in_PatientTelephone,
-                    in_PatientMotif,
-                    in_DateRDV,
-                    in_HeureRDV,
-                    "Confirmé",
-                    v_Timestamp
-                  }]
+          <Sequence sap:VirtualizedContainerService.HintSize="450,557" sap2010:WorkflowViewState.IdRef="Sequence_2">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:ReadRange AddHeaders="True" DataTable="[dt_RDV]" DisplayName="[EXCEL] Lire feuille RendezVous" sap:VirtualizedContainerService.HintSize="416,227" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="RendezVous" WorkbookPathResource="[@&quot;Data\Config.xlsx&quot;]">
+              <ui:ReadRange.Range>
+                <InArgument x:TypeArguments="x:String">
+                  <Literal x:TypeArguments="x:String" Value="" />
                 </InArgument>
-              </InvokeMethod.Parameters>
-            </InvokeMethod>
-
-            <!-- Écrire la DataTable mise à jour -->
-            <ui:WriteRange DisplayName="[EXCEL] Écrire RendezVous mis à jour"
-              SheetName="RendezVous"
-              StartingCell="A1"
-              AddHeaders="True"
-              DataTable="[dt_RDV]"/>
-
+              </ui:ReadRange.Range>
+            </ui:ReadRange>
+            <ui:WriteRange DataTable="[dt_RDV]" DisplayName="[EXCEL] Écrire RendezVous mis à jour" sap:VirtualizedContainerService.HintSize="416,270" sap2010:WorkflowViewState.IdRef="WriteRange_1" SheetName="RendezVous" StartingCell="A1" />
           </Sequence>
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>
     </ui:ExcelApplicationScope>
-
-    <!-- Confirmer succès -->
-    <Assign DisplayName="[OUT] RDV Confirmé = True">
-      <Assign.To><OutArgument x:TypeArguments="x:Boolean">[out_RDVConfirme]</OutArgument></Assign.To>
-      <Assign.Value><InArgument x:TypeArguments="x:Boolean"><Literal x:TypeArguments="x:Boolean" Value="True"/></InArgument></Assign.Value>
+    <Assign DisplayName="[OUT] RDV Confirmé = True" sap:VirtualizedContainerService.HintSize="484,175" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Boolean">[out_RDVConfirme]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Boolean">True</InArgument>
+      </Assign.Value>
     </Assign>
-
-    <ui:LogMessage Level="Info" Message="&quot;[RPA-RDV] ✅ Rendez-vous enregistré avec succès dans Excel&quot;"/>
-
+    <ui:LogMessage sap:VirtualizedContainerService.HintSize="484,166" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;Rendez-vous enregistré avec succès dans Excel&quot;]" />
   </Sequence>
 </Activity>
