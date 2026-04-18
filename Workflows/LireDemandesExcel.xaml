@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="UiPath.RDV.LireDemandesExcel" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="UiPath_RDV_LireDemandesExcel" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
     <x:Property Name="out_PatientNom" Type="OutArgument(x:String)" />
@@ -16,6 +16,7 @@
       <x:String>System.Linq</x:String>
       <x:String>UiPath.Core</x:String>
       <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Activities</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -34,9 +35,11 @@
       <AssemblyReference>UiPath.Platform</AssemblyReference>
       <AssemblyReference>UiPath.System.Activities</AssemblyReference>
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>UiPath.Workflow</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Lire Demandes Excel – Patients" sap:VirtualizedContainerService.HintSize="1281,1493" sap2010:WorkflowViewState.IdRef="Sequence_3">
+  <Sequence DisplayName="Lire Demandes Excel – Patients" sap:VirtualizedContainerService.HintSize="1281,1543" sap2010:WorkflowViewState.IdRef="Sequence_3">
     <Sequence.Variables>
       <Variable x:TypeArguments="sd:DataTable" Name="dt_Demandes" />
       <Variable x:TypeArguments="x:String" Name="v_CheminExcel" />
@@ -55,19 +58,19 @@
         <InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelDemandesPath"))]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Ouvrir fichier Demandes" sap:VirtualizedContainerService.HintSize="500,313" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" SensitivityOperation="None" WorkbookPath="[v_CheminExcel]">
+    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Ouvrir fichier Demandes" sap:VirtualizedContainerService.HintSize="500,420" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" SensitivityOperation="None" WorkbookPath="[v_CheminExcel]">
       <ui:ExcelApplicationScope.Body>
         <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook" />
           </ActivityAction.Argument>
-          <Sequence sap:VirtualizedContainerService.HintSize="450,171" sap2010:WorkflowViewState.IdRef="Sequence_1">
+          <Sequence sap:VirtualizedContainerService.HintSize="450,278" sap2010:WorkflowViewState.IdRef="Sequence_1">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               </scg:Dictionary>
             </sap:WorkflowViewStateService.ViewState>
-            <ui:ReadRange AddHeaders="True" DataTable="[dt_Demandes]" DisplayName="[EXCEL] Lire feuille Demandes" sap:VirtualizedContainerService.HintSize="416,111" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Demandes" WorkbookPath="Data\Demandes_Patients.xlsx">
+            <ui:ReadRange AddHeaders="True" DataTable="[dt_Demandes]" DisplayName="[EXCEL] Lire feuille Demandes" sap:VirtualizedContainerService.HintSize="416,218" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Demandes" WorkbookPath="Data\Demandes_Patients.xlsx">
               <ui:ReadRange.Range>
                 <InArgument x:TypeArguments="x:String">
                   <Literal x:TypeArguments="x:String" Value="" />
@@ -78,12 +81,12 @@
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>
     </ui:ExcelApplicationScope>
-    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Parcourir les demandes" sap:VirtualizedContainerService.HintSize="500,982" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_Demandes.Select(&quot;Statut = 'En attente'&quot;)]">
+    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Parcourir les demandes" sap:VirtualizedContainerService.HintSize="500,925" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_Demandes.Select(&quot;Statut = 'En attente'&quot;)]">
       <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>
           <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
         </ActivityAction.Argument>
-        <Sequence DisplayName="[ROW] Extraire informations patient" sap:VirtualizedContainerService.HintSize="450,808" sap2010:WorkflowViewState.IdRef="Sequence_2">
+        <Sequence DisplayName="[ROW] Extraire informations patient" sap:VirtualizedContainerService.HintSize="450,751" sap2010:WorkflowViewState.IdRef="Sequence_2">
           <sap:WorkflowViewStateService.ViewState>
             <scg:Dictionary x:TypeArguments="x:String, x:Object">
               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -113,8 +116,7 @@
               <InArgument x:TypeArguments="x:String">[row("Motif").ToString.Trim]</InArgument>
             </Assign.Value>
           </Assign>
-          <ui:LogMessage sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Patient lu : &quot; + out_PatientNom + &quot; | Tél : &quot; + out_PatientTelephone + &quot; | Motif : &quot; + out_PatientMotif]" />
-          <ui:Break DisplayName="[BREAK] Première demande récupérée" sap:VirtualizedContainerService.HintSize="416,48" sap2010:WorkflowViewState.IdRef="Break_1" />
+          <ui:LogMessage sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Patient lu : &quot; + out_PatientNom + &quot; | Tél : &quot; + out_PatientTelephone + &quot; | Motif : &quot; + out_PatientMotif]" />
         </Sequence>
       </ActivityAction>
     </ForEach>
