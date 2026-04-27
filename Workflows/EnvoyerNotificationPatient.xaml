@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="UiPath_RDV_EnvoyerNotificationPatient" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="UiPath_RDV_EnvoyerNotificationPatient" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:umae="clr-namespace:UiPath.Mail.Activities.Enums;assembly=UiPath.Mail.Activities" xmlns:umame="clr-namespace:UiPath.MicrosoftOffice365.Activities.Mail.Enums;assembly=UiPath.Mail.Activities" xmlns:usau="clr-namespace:UiPath.Shared.Activities.Utils;assembly=UiPath.Mail.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
     <x:Property Name="in_PatientNom" Type="InArgument(x:String)" />
@@ -36,7 +36,7 @@
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Envoyer Notification Confirmation Patient" sap:VirtualizedContainerService.HintSize="1597,1862" sap2010:WorkflowViewState.IdRef="Sequence_2">
+  <Sequence DisplayName="Envoyer Notification Confirmation Patient" sap:VirtualizedContainerService.HintSize="1597,1791" sap2010:WorkflowViewState.IdRef="Sequence_2">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="v_SujetEmail" />
       <Variable x:TypeArguments="x:String" Name="v_CorpsEmail" />
@@ -54,7 +54,7 @@
         <OutArgument x:TypeArguments="x:String">[v_EmailExpediteur]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailCabinet"))]</InArgument>
+        <InArgument x:TypeArguments="x:String">[If(in_Config.ContainsKey("EmailCabinet") AndAlso in_Config("EmailCabinet") IsNot Nothing, CStr(in_Config("EmailCabinet")), "mahdilaith08@gmail.com")]</InArgument>
       </Assign.Value>
     </Assign>
     <Assign DisplayName="[SET] Destinataire email (lookup depuis dossier)" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_2">
@@ -62,7 +62,7 @@
         <OutArgument x:TypeArguments="x:String">[v_EmailDestinataire]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailTestPatient"))]</InArgument>
+        <InArgument x:TypeArguments="x:String">[If(in_Config.ContainsKey("EmailTestPatient") AndAlso in_Config("EmailTestPatient") IsNot Nothing, CStr(in_Config("EmailTestPatient")), "mahdilaith08@gmail.com")]</InArgument>
       </Assign.Value>
     </Assign>
     <Assign DisplayName="[SET] Sujet email" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_3">
@@ -81,8 +81,25 @@
         <InArgument x:TypeArguments="x:String">["Bonjour " + in_PatientNom + "," + Environment.NewLine + Environment.NewLine + "Votre rendez-vous médical est confirmé :" + Environment.NewLine + " 📅 Date : " + in_DateRDV + Environment.NewLine + " 🕐 Heure : " + in_HeureRDV + Environment.NewLine + Environment.NewLine + "Merci de vous présenter 5 minutes avant l'heure prévue." + Environment.NewLine + "En cas d'empêchement, veuillez nous contacter au plus tôt." + Environment.NewLine + Environment.NewLine + "Cordialement," + Environment.NewLine + "Le Cabinet Médical" + Environment.NewLine + "🤖 Message généré automatiquement par le système RPA"]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:LogMessage DisplayName="[EMAIL] Simulation envoi confirmation" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] (Simulation) Email prêt pour : &quot; + v_EmailDestinataire + &quot; | Sujet: &quot; + v_SujetEmail]" />
-    <ui:LogMessage sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;[RPA-RDV] ✅ Email de confirmation envoyé à : &quot; + v_EmailDestinataire]" />
+    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" ReplyTo="{x:Null}" ResourceAttachmentList="{x:Null}" ResourceAttachments="{x:Null}" Result="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Action="Forward" AttachmentInputMode="Existing" Body="[v_CorpsEmail]" ConnectionMode="LegacyConfiguration" DisplayName="[EMAIL] Envoyer confirmation réelle (Gmail)" Email="[v_EmailExpediteur]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="450,279" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="False" Password="[If(in_Config.ContainsKey(&quot;EmailPassword&quot;) AndAlso in_Config(&quot;EmailPassword&quot;) IsNot Nothing, CStr(in_Config(&quot;EmailPassword&quot;)), &quot;&quot;)]" Port="587" SecureConnection="Auto" Server="smtp.gmail.com" Subject="[v_SujetEmail]" To="[v_EmailDestinataire]" UseISConnection="False" UseRichTextEditor="True">
+      <ui:SendMail.AttachmentsBackup>
+        <usau:BackupSlot x:TypeArguments="umame:AttachmentInputMode" StoredValue="Existing">
+          <usau:BackupSlot.BackupValues>
+            <scg:Dictionary x:TypeArguments="umame:AttachmentInputMode, scg:List(x:Object)" />
+          </usau:BackupSlot.BackupValues>
+        </usau:BackupSlot>
+      </ui:SendMail.AttachmentsBackup>
+      <ui:SendMail.ConnectionDetailsBackupSlot>
+        <usau:BackupSlot x:TypeArguments="umae:ConnectionDetails" StoredValue="LegacyConfiguration">
+          <usau:BackupSlot.BackupValues>
+            <scg:Dictionary x:TypeArguments="umae:ConnectionDetails, scg:List(x:Object)" />
+          </usau:BackupSlot.BackupValues>
+        </usau:BackupSlot>
+      </ui:SendMail.ConnectionDetailsBackupSlot>
+      <ui:SendMail.Files>
+        <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
+      </ui:SendMail.Files>
+    </ui:SendMail>
     <Assign DisplayName="[SET] Chemin Log" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_5">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[v_CheminLog]</OutArgument>
