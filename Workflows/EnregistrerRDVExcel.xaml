@@ -82,31 +82,15 @@
       </Assign.Value>
     </Assign>
     <ui:LogMessage sap:VirtualizedContainerService.HintSize="484,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Enregistrement RDV pour : &quot; + in_PatientNom + &quot; le &quot; + in_DateRDV + &quot; à &quot; + in_HeureRDV]" />
-    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Ouvrir Dossier RDV" sap:VirtualizedContainerService.HintSize="484,699" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" SensitivityOperation="None" WorkbookPath="[v_CheminRDV]">
-      <ui:ExcelApplicationScope.Body>
-        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
-          <ActivityAction.Argument>
-            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook" />
-          </ActivityAction.Argument>
-          <Sequence sap:VirtualizedContainerService.HintSize="450,557" sap2010:WorkflowViewState.IdRef="Sequence_2">
-            <sap:WorkflowViewStateService.ViewState>
-              <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-              </scg:Dictionary>
-            </sap:WorkflowViewStateService.ViewState>
-            <ui:ReadRange AddHeaders="True" DataTable="[dt_RDV]" DisplayName="[EXCEL] Lire feuille RendezVous" sap:VirtualizedContainerService.HintSize="416,227" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="RendezVous" WorkbookPath="[v_CheminRDV]">
-              <ui:ReadRange.Range>
-                <InArgument x:TypeArguments="x:String">
-                  <Literal x:TypeArguments="x:String" Value="" />
-                </InArgument>
-              </ui:ReadRange.Range>
-            </ui:ReadRange>
-            <ui:AddDataRow DataRow="{x:Null}" ArrayRow="[{in_PatientNom, in_PatientTelephone, in_PatientMotif, in_DateRDV, in_HeureRDV, v_Timestamp}]" DataTable="[dt_RDV]" DisplayName="[DATA] Ajouter ligne RDV" sap:VirtualizedContainerService.HintSize="416,221" sap2010:WorkflowViewState.IdRef="AddDataRow_1" />
-            <ui:WriteRange DataTable="[dt_RDV]" DisplayName="[EXCEL] Écrire RendezVous mis à jour" sap:VirtualizedContainerService.HintSize="416,270" sap2010:WorkflowViewState.IdRef="WriteRange_1" SheetName="RendezVous" StartingCell="A1" WorkbookPath="[v_CheminRDV]" />
-          </Sequence>
-        </ActivityAction>
-      </ui:ExcelApplicationScope.Body>
-    </ui:ExcelApplicationScope>
+    <ui:ReadRange AddHeaders="True" DataTable="[dt_RDV]" DisplayName="[EXCEL] Lire feuille RendezVous" sap:VirtualizedContainerService.HintSize="484,227" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="RendezVous" WorkbookPath="[v_CheminRDV]">
+      <ui:ReadRange.Range>
+        <InArgument x:TypeArguments="x:String">
+          <Literal x:TypeArguments="x:String" Value="" />
+        </InArgument>
+      </ui:ReadRange.Range>
+    </ui:ReadRange>
+    <ui:AddDataRow DataRow="{x:Null}" ArrayRow="[{in_PatientNom, in_PatientTelephone, in_PatientMotif, in_DateRDV, in_HeureRDV, v_Timestamp}]" DataTable="[dt_RDV]" DisplayName="[DATA] Ajouter ligne RDV" sap:VirtualizedContainerService.HintSize="484,221" sap2010:WorkflowViewState.IdRef="AddDataRow_1" />
+    <ui:WriteRange DataTable="[dt_RDV]" DisplayName="[EXCEL] Écrire RendezVous mis à jour" sap:VirtualizedContainerService.HintSize="484,270" sap2010:WorkflowViewState.IdRef="WriteRange_1" SheetName="RendezVous" StartingCell="A1" WorkbookPath="[v_CheminRDV]" />
     <Assign DisplayName="[OUT] RDV Confirmé = True" sap:VirtualizedContainerService.HintSize="484,175" sap2010:WorkflowViewState.IdRef="Assign_3">
       <Assign.To>
         <OutArgument x:TypeArguments="x:Boolean">[out_RDVConfirme]</OutArgument>

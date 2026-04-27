@@ -66,29 +66,13 @@
       </Assign.Value>
     </Assign>
     <ui:LogMessage sap:VirtualizedContainerService.HintSize="500,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Consultation de l'agenda : &quot; + v_CheminAgenda]" />
-    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Ouvrir Agenda Médecin" sap:VirtualizedContainerService.HintSize="500,313" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" SensitivityOperation="None" WorkbookPath="[v_CheminAgenda]">
-      <ui:ExcelApplicationScope.Body>
-        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
-          <ActivityAction.Argument>
-            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook" />
-          </ActivityAction.Argument>
-          <Sequence sap:VirtualizedContainerService.HintSize="450,171" sap2010:WorkflowViewState.IdRef="Sequence_1">
-            <sap:WorkflowViewStateService.ViewState>
-              <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-              </scg:Dictionary>
-            </sap:WorkflowViewStateService.ViewState>
-            <ui:ReadRange AddHeaders="True" DataTable="[dt_Agenda]" DisplayName="[EXCEL] Lire feuille Agenda" sap:VirtualizedContainerService.HintSize="416,111" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Agenda" WorkbookPath="[v_CheminAgenda]">
-              <ui:ReadRange.Range>
-                <InArgument x:TypeArguments="x:String">
-                  <Literal x:TypeArguments="x:String" Value="" />
-                </InArgument>
-              </ui:ReadRange.Range>
-            </ui:ReadRange>
-          </Sequence>
-        </ActivityAction>
-      </ui:ExcelApplicationScope.Body>
-    </ui:ExcelApplicationScope>
+    <ui:ReadRange AddHeaders="True" DataTable="[dt_Agenda]" DisplayName="[EXCEL] Lire feuille Agenda" sap:VirtualizedContainerService.HintSize="500,111" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Agenda" WorkbookPath="[v_CheminAgenda]">
+      <ui:ReadRange.Range>
+        <InArgument x:TypeArguments="x:String">
+          <Literal x:TypeArguments="x:String" Value="" />
+        </InArgument>
+      </ui:ReadRange.Range>
+    </ui:ReadRange>
     <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Chercher créneau disponible" sap:VirtualizedContainerService.HintSize="500,934" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_Agenda.Select(&quot;Statut = 'Libre'&quot;).OrderBy(Function(r) r(&quot;Date&quot;).ToString).Take(1).ToArray]">
       <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>

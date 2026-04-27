@@ -111,29 +111,13 @@
         </Assign>
       </If.Then>
     </If>
-    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Ouvrir Config.xlsx" sap:VirtualizedContainerService.HintSize="536,420" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" ReadOnly="True" SensitivityOperation="None" Visible="False" WorkbookPath="[in_ConfigFilePath]">
-      <ui:ExcelApplicationScope.Body>
-        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
-          <ActivityAction.Argument>
-            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbook" />
-          </ActivityAction.Argument>
-          <Sequence sap:VirtualizedContainerService.HintSize="450,278" sap2010:WorkflowViewState.IdRef="Sequence_1">
-            <sap:WorkflowViewStateService.ViewState>
-              <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-              </scg:Dictionary>
-            </sap:WorkflowViewStateService.ViewState>
-            <ui:ReadRange AddHeaders="True" DataTable="[dt_Config]" DisplayName="[EXCEL] Lire feuille Config" sap:VirtualizedContainerService.HintSize="416,218" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Config" WorkbookPath="[in_ConfigFilePath]">
-              <ui:ReadRange.Range>
-                <InArgument x:TypeArguments="x:String">
-                  <Literal x:TypeArguments="x:String" Value="" />
-                </InArgument>
-              </ui:ReadRange.Range>
-            </ui:ReadRange>
-          </Sequence>
-        </ActivityAction>
-      </ui:ExcelApplicationScope.Body>
-    </ui:ExcelApplicationScope>
+    <ui:ReadRange AddHeaders="True" DataTable="[dt_Config]" DisplayName="[EXCEL] Lire feuille Config" sap:VirtualizedContainerService.HintSize="536,218" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Config" WorkbookPath="[in_ConfigFilePath]">
+      <ui:ReadRange.Range>
+        <InArgument x:TypeArguments="x:String">
+          <Literal x:TypeArguments="x:String" Value="" />
+        </InArgument>
+      </ui:ReadRange.Range>
+    </ui:ReadRange>
     <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Charger paramètres Config" sap:VirtualizedContainerService.HintSize="536,628" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_Config.Rows.Cast(Of System.Data.DataRow)]">
       <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>
