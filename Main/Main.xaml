@@ -67,6 +67,7 @@
         </Variable.Default>
       </Variable>
       <Variable x:TypeArguments="x:String" Name="PatientEmail" />
+      <Variable x:TypeArguments="x:String" Name="PatientID" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -88,6 +89,7 @@
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientTelephone">[PatientTelephone]</OutArgument>
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientMotif">[PatientMotif]</OutArgument>
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientEmail">[PatientEmail]</OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PatientID">[PatientID]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
     <ui:LogMessage DisplayName="[LOG] Étape 2 – Vérification disponibilité médecin" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin&quot;]" />
@@ -142,6 +144,13 @@
             </Assign.Value>
           </Assign>
           <ui:LogMessage DisplayName="[LOG] ✅ RDV Confirmé avec succès" sap2010:WorkflowViewState.IdRef="LogMessage_7" Level="Info" Message="[&quot;[RPA-RDV] ✅ Rendez-vous CONFIRMÉ pour &quot; + PatientNom + &quot; le &quot; + DateRDV + &quot; à &quot; + HeureRDV]" />
+          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] MettreAJourStatutDemande" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_8" UnSafe="False" WorkflowFileName="Workflows\MettreAJourStatutDemande.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PatientID">[PatientID]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_NouveauStatut">Traité</InArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
         </Sequence>
       </If.Then>
       <If.Else>

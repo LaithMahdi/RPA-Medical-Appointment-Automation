@@ -29,8 +29,13 @@ app.post('/api/submit', async (req, res) => {
         let worksheet;
 
         if (fs.existsSync(EXCEL_PATH)) {
-            await workbook.xlsx.readFile(EXCEL_PATH);
-            worksheet = workbook.getWorksheet('Demandes') || workbook.worksheets[0];
+            try {
+                await workbook.xlsx.readFile(EXCEL_PATH);
+                worksheet = workbook.getWorksheet('Demandes') || workbook.worksheets[0];
+            } catch (readError) {
+                console.warn('Corruption détectée ou fichier incompatible. Création d\'un nouveau classeur.');
+                worksheet = workbook.addWorksheet('Demandes');
+            }
         } else {
             worksheet = workbook.addWorksheet('Demandes');
         }

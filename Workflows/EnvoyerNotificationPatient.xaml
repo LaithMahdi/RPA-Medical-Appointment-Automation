@@ -74,15 +74,36 @@
         <InArgument x:TypeArguments="x:String">["[CABINET MÉDICAL] Confirmation de votre rendez-vous – " + in_DateRDV + " à " + in_HeureRDV]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="[SET] Corps email" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_4">
+    <Assign DisplayName="[SET] Corps email (HTML)" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_4">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[v_CorpsEmail]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">["Bonjour " + in_PatientNom + "," + Environment.NewLine + Environment.NewLine + "Votre rendez-vous médical est confirmé :" + Environment.NewLine + " 📅 Date : " + in_DateRDV + Environment.NewLine + " 🕐 Heure : " + in_HeureRDV + Environment.NewLine + Environment.NewLine + "Merci de vous présenter 5 minutes avant l'heure prévue." + Environment.NewLine + "En cas d'empêchement, veuillez nous contacter au plus tôt." + Environment.NewLine + Environment.NewLine + "Cordialement," + Environment.NewLine + "Le Cabinet Médical" + Environment.NewLine + "🤖 Message généré automatiquement par le système RPA"]</InArgument>
+        <InArgument x:TypeArguments="x:String" xml:space="preserve">["&lt;div style='font-family: sans-serif; max-width: 600px; margin: 20px auto; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; background-color: #ffffff; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);'&gt;" +
+"&lt;div style='background: #3b82f6; padding: 40px 20px; text-align: center;'&gt;" +
+"&lt;div style='display: inline-block; background: #dfecffff; padding: 12px; border-radius: 12px; margin-bottom: 15px;'&gt;" +
+"&lt;span style='font-size: 30px;'&gt;🩺&lt;/span&gt;" +
+"&lt;/div&gt;" +
+"&lt;h1 style='color: white; margin: 0; font-size: 24px; letter-spacing: -0.025em;'&gt;Cabinet Médical Mahdi&lt;/h1&gt;" +
+"&lt;/div&gt;" +
+"&lt;div style='padding: 40px; color: #334155; line-height: 1.6;'&gt;" +
+"&lt;h2 style='color: #1e293b; margin-top: 0;'&gt;Confirmation de votre rendez-vous&lt;/h2&gt;" +
+"&lt;p&gt;Bonjour &lt;strong&gt;" + in_PatientNom + "&lt;/strong&gt;,&lt;/p&gt;" +
+"&lt;p&gt;Nous avons le plaisir de vous confirmer que votre demande de rendez-vous avec le &lt;strong&gt;Dr. Laith Mahdi&lt;/strong&gt; a été traitée avec succès.&lt;/p&gt;" +
+"&lt;div style='background: #f8fafc; border-radius: 16px; padding: 25px; margin: 30px 0; border: 1px solid #e2e8f0;'&gt;" +
+"&lt;div style='margin-bottom: 10px;'&gt;&lt;span style='color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 600;'&gt;Date prévue&lt;/span&gt;&lt;br&gt;&lt;strong style='font-size: 18px; color: #1e293b;'&gt;📅 " + in_DateRDV + "&lt;/strong&gt;&lt;/div&gt;" +
+"&lt;div&gt;&lt;span style='color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 600;'&gt;Heure précise&lt;/span&gt;&lt;br&gt;&lt;strong style='font-size: 18px; color: #1e293b;'&gt;🕐 " + in_HeureRDV + "&lt;/strong&gt;&lt;/div&gt;" +
+"&lt;/div&gt;" +
+"&lt;div style='background: #eff6ff; color: #1e40af; padding: 15px; border-radius: 12px; font-size: 14px; margin-bottom: 30px;'&gt;" +
+"💡 &lt;strong&gt;Note :&lt;/strong&gt; Veuillez vous présenter 5 minutes avant l'heure prévue. En cas d'empêchement, contactez-nous au plus tôt." +
+"&lt;/div&gt;" +
+"&lt;/div&gt;" +
+"&lt;div style='background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 20px; text-align: center; color: #94a3b8; font-size: 12px;'&gt;" +
+"&lt;strong&gt;Cabinet Médical RPA&lt;/strong&gt; | 🤖 Message automatique" +
+"&lt;/div&gt;&lt;/div&gt;"]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" ReplyTo="{x:Null}" ResourceAttachmentList="{x:Null}" ResourceAttachments="{x:Null}" Result="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Action="Forward" AttachmentInputMode="Existing" Body="[v_CorpsEmail]" ConnectionMode="LegacyConfiguration" DisplayName="[EMAIL] Envoyer confirmation réelle (Gmail)" Email="[v_EmailExpediteur]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="450,279" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="False" Password="[If(in_Config.ContainsKey(&quot;SmtpPassword&quot;) AndAlso in_Config(&quot;SmtpPassword&quot;) IsNot Nothing, CStr(in_Config(&quot;SmtpPassword&quot;)), &quot;&quot;)]" Port="[If(in_Config.ContainsKey(&quot;SmtpPort&quot;), CInt(in_Config(&quot;SmtpPort&quot;)), 587)]" SecureConnection="Auto" Server="[If(in_Config.ContainsKey(&quot;SmtpServer&quot;), CStr(in_Config(&quot;SmtpServer&quot;)), &quot;smtp.gmail.com&quot;)]" Subject="[v_SujetEmail]" To="[v_EmailDestinataire]" UseISConnection="False" UseRichTextEditor="True">
+    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" ReplyTo="{x:Null}" ResourceAttachmentList="{x:Null}" ResourceAttachments="{x:Null}" Result="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Action="Forward" AttachmentInputMode="Existing" Body="[v_CorpsEmail]" ConnectionMode="LegacyConfiguration" DisplayName="[EMAIL] Envoyer confirmation réelle (Gmail)" Email="[v_EmailExpediteur]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="450,279" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="True" Password="[If(in_Config.ContainsKey(&quot;SmtpPassword&quot;) AndAlso in_Config(&quot;SmtpPassword&quot;) IsNot Nothing, CStr(in_Config(&quot;SmtpPassword&quot;)), &quot;&quot;)]" Port="[If(in_Config.ContainsKey(&quot;SmtpPort&quot;), CInt(in_Config(&quot;SmtpPort&quot;)), 587)]" SecureConnection="Auto" Server="[If(in_Config.ContainsKey(&quot;SmtpServer&quot;), CStr(in_Config(&quot;SmtpServer&quot;)), &quot;smtp.gmail.com&quot;)]" Subject="[v_SujetEmail]" To="[v_EmailDestinataire]" UseISConnection="False" UseRichTextEditor="True">
       <ui:SendMail.AttachmentsBackup>
         <usau:BackupSlot x:TypeArguments="umame:AttachmentInputMode" StoredValue="Existing">
           <usau:BackupSlot.BackupValues>

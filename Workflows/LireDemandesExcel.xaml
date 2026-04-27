@@ -5,6 +5,7 @@
     <x:Property Name="out_PatientTelephone" Type="OutArgument(x:String)" />
     <x:Property Name="out_PatientMotif" Type="OutArgument(x:String)" />
     <x:Property Name="out_PatientEmail" Type="OutArgument(x:String)" />
+    <x:Property Name="out_PatientID" Type="OutArgument(x:String)" />
   </x:Members>
   <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
@@ -109,7 +110,15 @@
               <InArgument x:TypeArguments="x:String">[row("Email").ToString.Trim]</InArgument>
             </Assign.Value>
           </Assign>
-          <ui:LogMessage sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Patient lu : &quot; + out_PatientNom + &quot; | Email : &quot; + out_PatientEmail + &quot; | Tél : &quot; + out_PatientTelephone + &quot; | Motif : &quot; + out_PatientMotif]" />
+          <Assign DisplayName="[SET] ID patient" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_6">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_PatientID]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[row("ID").ToString.Trim]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:LogMessage sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Patient lu : &quot; + out_PatientNom + &quot; | ID : &quot; + out_PatientID]" />
         </Sequence>
       </ActivityAction>
     </ForEach>
