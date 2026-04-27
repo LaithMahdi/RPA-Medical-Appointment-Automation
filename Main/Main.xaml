@@ -66,6 +66,7 @@
           <Literal x:TypeArguments="x:String" Value="" />
         </Variable.Default>
       </Variable>
+      <Variable x:TypeArguments="x:String" Name="PatientEmail" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -86,6 +87,7 @@
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientNom">[PatientNom]</OutArgument>
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientTelephone">[PatientTelephone]</OutArgument>
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientMotif">[PatientMotif]</OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PatientEmail">[PatientEmail]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
     <ui:LogMessage DisplayName="[LOG] Étape 2 – Vérification disponibilité médecin" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin&quot;]" />
@@ -128,6 +130,7 @@
               <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
               <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">[DateRDV]</InArgument>
               <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">[HeureRDV]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PatientEmail">[PatientEmail]</InArgument>
             </ui:InvokeWorkflowFile.Arguments>
           </ui:InvokeWorkflowFile>
           <Assign DisplayName="[SET] Statut = Succès" sap2010:WorkflowViewState.IdRef="Assign_1">

@@ -4,6 +4,7 @@
     <x:Property Name="in_PatientNom" Type="InArgument(x:String)" />
     <x:Property Name="in_DateRDV" Type="InArgument(x:String)" />
     <x:Property Name="in_HeureRDV" Type="InArgument(x:String)" />
+    <x:Property Name="in_PatientEmail" Type="InArgument(x:String)" />
   </x:Members>
   <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
@@ -62,7 +63,7 @@
         <OutArgument x:TypeArguments="x:String">[v_EmailDestinataire]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">[If(in_Config.ContainsKey("EmailTestPatient") AndAlso in_Config("EmailTestPatient") IsNot Nothing, CStr(in_Config("EmailTestPatient")), "mahdilaith08@gmail.com")]</InArgument>
+        <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrEmpty(in_PatientEmail), in_PatientEmail, If(in_Config.ContainsKey("EmailTestPatient") AndAlso in_Config("EmailTestPatient") IsNot Nothing, CStr(in_Config("EmailTestPatient")), "mahdilaith08@gmail.com"))]</InArgument>
       </Assign.Value>
     </Assign>
     <Assign DisplayName="[SET] Sujet email" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_3">
