@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="UiPath.RDV.EnvoyerNotificationPatient" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="UiPath_RDV_EnvoyerNotificationPatient" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
     <x:Property Name="in_PatientNom" Type="InArgument(x:String)" />
@@ -36,7 +36,7 @@
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Envoyer Notification Confirmation Patient" sap:VirtualizedContainerService.HintSize="700,500" sap2010:WorkflowViewState.IdRef="Sequence_2">
+  <Sequence DisplayName="Envoyer Notification Confirmation Patient" sap:VirtualizedContainerService.HintSize="1597,1862" sap2010:WorkflowViewState.IdRef="Sequence_2">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="v_SujetEmail" />
       <Variable x:TypeArguments="x:String" Name="v_CorpsEmail" />
@@ -49,7 +49,7 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <Assign DisplayName="[SET] Expéditeur email" sap2010:WorkflowViewState.IdRef="Assign_1">
+    <Assign DisplayName="[SET] Expéditeur email" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[v_EmailExpediteur]</OutArgument>
       </Assign.To>
@@ -57,7 +57,7 @@
         <InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailCabinet"))]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="[SET] Destinataire email (lookup depuis dossier)" sap2010:WorkflowViewState.IdRef="Assign_2">
+    <Assign DisplayName="[SET] Destinataire email (lookup depuis dossier)" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_2">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[v_EmailDestinataire]</OutArgument>
       </Assign.To>
@@ -65,7 +65,7 @@
         <InArgument x:TypeArguments="x:String">[CStr(in_Config("EmailTestPatient"))]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="[SET] Sujet email" sap2010:WorkflowViewState.IdRef="Assign_3">
+    <Assign DisplayName="[SET] Sujet email" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_3">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[v_SujetEmail]</OutArgument>
       </Assign.To>
@@ -73,7 +73,7 @@
         <InArgument x:TypeArguments="x:String">["[CABINET MÉDICAL] Confirmation de votre rendez-vous – " + in_DateRDV + " à " + in_HeureRDV]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="[SET] Corps email" sap2010:WorkflowViewState.IdRef="Assign_4">
+    <Assign DisplayName="[SET] Corps email" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_4">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[v_CorpsEmail]</OutArgument>
       </Assign.To>
@@ -81,9 +81,9 @@
         <InArgument x:TypeArguments="x:String">["Bonjour " + in_PatientNom + "," + Environment.NewLine + Environment.NewLine + "Votre rendez-vous médical est confirmé :" + Environment.NewLine + " 📅 Date : " + in_DateRDV + Environment.NewLine + " 🕐 Heure : " + in_HeureRDV + Environment.NewLine + Environment.NewLine + "Merci de vous présenter 5 minutes avant l'heure prévue." + Environment.NewLine + "En cas d'empêchement, veuillez nous contacter au plus tôt." + Environment.NewLine + Environment.NewLine + "Cordialement," + Environment.NewLine + "Le Cabinet Médical" + Environment.NewLine + "🤖 Message généré automatiquement par le système RPA"]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:LogMessage DisplayName="[EMAIL] Simulation envoi confirmation" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] (Simulation) Email prêt pour : &quot; + v_EmailDestinataire + &quot; | Sujet: &quot; + v_SujetEmail]" />
-    <ui:LogMessage sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;[RPA-RDV] ✅ Email de confirmation envoyé à : &quot; + v_EmailDestinataire]" />
-    <Assign DisplayName="[SET] Chemin Log" sap2010:WorkflowViewState.IdRef="Assign_5">
+    <ui:LogMessage DisplayName="[EMAIL] Simulation envoi confirmation" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] (Simulation) Email prêt pour : &quot; + v_EmailDestinataire + &quot; | Sujet: &quot; + v_SujetEmail]" />
+    <ui:LogMessage sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;[RPA-RDV] ✅ Email de confirmation envoyé à : &quot; + v_EmailDestinataire]" />
+    <Assign DisplayName="[SET] Chemin Log" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="Assign_5">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[v_CheminLog]</OutArgument>
       </Assign.To>
@@ -91,13 +91,18 @@
         <InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelLogPath"))]</InArgument>
       </Assign.Value>
     </Assign>
-    <Sequence sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence sap:VirtualizedContainerService.HintSize="450,614" sap2010:WorkflowViewState.IdRef="Sequence_1">
       <Sequence.Variables>
         <Variable x:TypeArguments="sd:DataTable" Name="dt_LogItem" />
       </Sequence.Variables>
-      <ui:BuildDataTable DataTable="[dt_LogItem]" DisplayName="[DATA] Créer structure Log" sap:VirtualizedContainerService.HintSize="450,60" sap2010:WorkflowViewState.IdRef="BuildDataTable_1" TableInfo="&lt;NewDataSet&gt;&#xA;  &lt;xs:schema id=&quot;NewDataSet&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&#xA;    &lt;xs:element name=&quot;NewDataSet&quot; msdata:IsDataSet=&quot;true&quot; msdata:MainDataTable=&quot;true&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&#xA;      &lt;xs:complexType&gt;&#xA;        &lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&#xA;          &lt;xs:element name=&quot;TableName&quot;&gt;&#xA;            &lt;xs:complexType&gt;&#xA;              &lt;xs:sequence&gt;&#xA;                &lt;xs:element name=&quot;Timestamp&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;                &lt;xs:element name=&quot;Patient&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;                &lt;xs:element name=&quot;Date&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;                &lt;xs:element name=&quot;Heure&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;                &lt;xs:element name=&quot;Statut&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;              &lt;/xs:sequence&gt;&#xA;            &lt;/xs:complexType&gt;&#xA;          &lt;/xs:element&gt;&#xA;        &lt;/xs:choice&gt;&#xA;      &lt;/xs:complexType&gt;&#xA;    &lt;/xs:element&gt;&#xA;  &lt;/xs:schema&gt;&#xA;&lt;/NewDataSet&gt;" />
-      <ui:AddDataRow DataRow="{x:Null}" ArrayRow="[{DateTime.Now.ToString(&quot;dd/MM/yyyy HH:mm:ss&quot;), in_PatientNom, in_DateRDV, in_HeureRDV, &quot;Email Envoyé&quot;}]" DataTable="[dt_LogItem]" DisplayName="[DATA] Ajouter ligne Log" sap:VirtualizedContainerService.HintSize="450,185" sap2010:WorkflowViewState.IdRef="AddDataRow_2" />
-      <ui:AppendRange DataTable="[dt_LogItem]" DisplayName="[EXCEL] Ajouter ligne dans Log" sap2010:WorkflowViewState.IdRef="AppendRange_1" SheetName="Log" WorkbookPath="[v_CheminLog]" />
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <ui:BuildDataTable DataTable="[dt_LogItem]" DisplayName="[DATA] Créer structure Log" sap:VirtualizedContainerService.HintSize="416,92" sap2010:WorkflowViewState.IdRef="BuildDataTable_1" TableInfo="&lt;NewDataSet&gt;&#xA;  &lt;xs:schema id=&quot;NewDataSet&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&#xA;    &lt;xs:element name=&quot;NewDataSet&quot; msdata:IsDataSet=&quot;true&quot; msdata:MainDataTable=&quot;TableName&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&#xA;      &lt;xs:complexType&gt;&#xA;        &lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&#xA;          &lt;xs:element name=&quot;TableName&quot;&gt;&#xA;            &lt;xs:complexType&gt;&#xA;              &lt;xs:sequence&gt;&#xA;                &lt;xs:element name=&quot;Timestamp&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;                &lt;xs:element name=&quot;Patient&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;                &lt;xs:element name=&quot;Date&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;                &lt;xs:element name=&quot;Heure&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;                &lt;xs:element name=&quot;Statut&quot; msdata:Caption=&quot;&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xA;              &lt;/xs:sequence&gt;&#xA;            &lt;/xs:complexType&gt;&#xA;          &lt;/xs:element&gt;&#xA;        &lt;/xs:choice&gt;&#xA;      &lt;/xs:complexType&gt;&#xA;    &lt;/xs:element&gt;&#xA;  &lt;/xs:schema&gt;&#xA;&lt;/NewDataSet&gt;" />
+      <ui:AddDataRow DataRow="{x:Null}" ArrayRow="[{DateTime.Now.ToString(&quot;dd/MM/yyyy HH:mm:ss&quot;), in_PatientNom, in_DateRDV, in_HeureRDV, &quot;Email Envoyé&quot;}]" DataTable="[dt_LogItem]" DisplayName="[DATA] Ajouter ligne Log" sap:VirtualizedContainerService.HintSize="416,221" sap2010:WorkflowViewState.IdRef="AddDataRow_2" />
+      <ui:AppendRange DataTable="[dt_LogItem]" DisplayName="[EXCEL] Ajouter ligne dans Log" sap:VirtualizedContainerService.HintSize="416,218" sap2010:WorkflowViewState.IdRef="AppendRange_1" SheetName="Log" WorkbookPath="[v_CheminLog]" />
     </Sequence>
   </Sequence>
 </Activity>
