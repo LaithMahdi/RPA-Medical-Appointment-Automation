@@ -92,85 +92,100 @@
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientID">[PatientID]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
-    <ui:LogMessage DisplayName="[LOG] Étape 2 – Vérification disponibilité médecin" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin&quot;]" />
-    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] VerifierDisponibiliteAgenda" sap:VirtualizedContainerService.HintSize="450,177" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Workflows\VerifierDisponibiliteAgenda.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
-        <OutArgument x:TypeArguments="x:String" x:Key="out_DateRDV">[DateRDV]</OutArgument>
-        <OutArgument x:TypeArguments="x:String" x:Key="out_HeureRDV">[HeureRDV]</OutArgument>
-        <OutArgument x:TypeArguments="x:Boolean" x:Key="out_DisponibiliteTrouvee">[DisponibiliteTrouvee]</OutArgument>
-      </ui:InvokeWorkflowFile.Arguments>
-    </ui:InvokeWorkflowFile>
-    <If Condition="[DisponibiliteTrouvee]" DisplayName="[IF] Créneau disponible trouvé ?" sap:VirtualizedContainerService.HintSize="450,179" sap2010:WorkflowViewState.IdRef="If_1">
+    <If Condition="[Not String.IsNullOrEmpty(PatientID)]" DisplayName="[IF] Demande en attente trouvée ?" sap:VirtualizedContainerService.HintSize="450,1130" sap2010:WorkflowViewState.IdRef="If_2">
       <If.Then>
-        <Sequence DisplayName="[THEN] Enregistrement et Confirmation" sap2010:WorkflowViewState.IdRef="Sequence_1">
-          <ui:LogMessage DisplayName="[LOG] Étape 3 – Enregistrement du rendez-vous" sap2010:WorkflowViewState.IdRef="LogMessage_4" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 3 : Enregistrement du rendez-vous dans Excel&quot;]" />
-          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] EnregistrerRDVExcel" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_4" UnSafe="False" WorkflowFileName="Workflows\EnregistrerRDVExcel.xaml">
+        <Sequence DisplayName="[SEQ] Traitement de la demande" sap:VirtualizedContainerService.HintSize="416,844" sap2010:WorkflowViewState.IdRef="Sequence_4">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:LogMessage DisplayName="[LOG] Étape 2 – Vérification disponibilité médecin" sap:VirtualizedContainerService.HintSize="382,175" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin&quot;]" />
+          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] VerifierDisponibiliteAgenda" sap:VirtualizedContainerService.HintSize="382,177" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Workflows\VerifierDisponibiliteAgenda.xaml">
             <ui:InvokeWorkflowFile.Arguments>
               <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_PatientTelephone">[PatientTelephone]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_PatientMotif">[PatientMotif]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">[DateRDV]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">[HeureRDV]</InArgument>
-              <OutArgument x:TypeArguments="x:Boolean" x:Key="out_RDVConfirme">[RDVConfirme]</OutArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_DateRDV">[DateRDV]</OutArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_HeureRDV">[HeureRDV]</OutArgument>
+              <OutArgument x:TypeArguments="x:Boolean" x:Key="out_DisponibiliteTrouvee">[DisponibiliteTrouvee]</OutArgument>
             </ui:InvokeWorkflowFile.Arguments>
           </ui:InvokeWorkflowFile>
-          <ui:LogMessage DisplayName="[LOG] Étape 4 – Mise à jour agenda" sap2010:WorkflowViewState.IdRef="LogMessage_5" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 4 : Mise à jour de l'agenda du médecin&quot;]" />
-          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] MettreAJourAgenda" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="Workflows\MettreAJourAgenda.xaml">
-            <ui:InvokeWorkflowFile.Arguments>
-              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">[DateRDV]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">[HeureRDV]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
-            </ui:InvokeWorkflowFile.Arguments>
-          </ui:InvokeWorkflowFile>
-          <ui:LogMessage DisplayName="[LOG] Étape 5 – Envoi notification" sap2010:WorkflowViewState.IdRef="LogMessage_6" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 5 : Envoi de la confirmation au patient&quot;]" />
-          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] EnvoyerNotificationPatient" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_6" UnSafe="False" WorkflowFileName="Workflows\EnvoyerNotificationPatient.xaml">
-            <ui:InvokeWorkflowFile.Arguments>
-              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">[DateRDV]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">[HeureRDV]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_PatientEmail">[PatientEmail]</InArgument>
-            </ui:InvokeWorkflowFile.Arguments>
-          </ui:InvokeWorkflowFile>
-          <Assign DisplayName="[SET] Statut = Succès" sap2010:WorkflowViewState.IdRef="Assign_1">
-            <Assign.To>
-              <OutArgument x:TypeArguments="x:String">[TransactionStatus]</OutArgument>
-            </Assign.To>
-            <Assign.Value>
-              <InArgument x:TypeArguments="x:String">SUCCESS</InArgument>
-            </Assign.Value>
-          </Assign>
-          <ui:LogMessage DisplayName="[LOG] ✅ RDV Confirmé avec succès" sap2010:WorkflowViewState.IdRef="LogMessage_7" Level="Info" Message="[&quot;[RPA-RDV] ✅ Rendez-vous CONFIRMÉ pour &quot; + PatientNom + &quot; le &quot; + DateRDV + &quot; à &quot; + HeureRDV]" />
-          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] MettreAJourStatutDemande" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_8" UnSafe="False" WorkflowFileName="Workflows\MettreAJourStatutDemande.xaml">
-            <ui:InvokeWorkflowFile.Arguments>
-              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_PatientID">[PatientID]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_NouveauStatut">Traité</InArgument>
-            </ui:InvokeWorkflowFile.Arguments>
-          </ui:InvokeWorkflowFile>
+          <If Condition="[DisponibiliteTrouvee]" DisplayName="[IF] Créneau disponible trouvé ?" sap:VirtualizedContainerService.HintSize="382,179" sap2010:WorkflowViewState.IdRef="If_1">
+            <If.Then>
+              <Sequence DisplayName="[THEN] Enregistrement et Confirmation" sap2010:WorkflowViewState.IdRef="Sequence_1">
+                <ui:LogMessage DisplayName="[LOG] Étape 3 – Enregistrement du rendez-vous" sap2010:WorkflowViewState.IdRef="LogMessage_4" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 3 : Enregistrement du rendez-vous dans Excel&quot;]" />
+                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] EnregistrerRDVExcel" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_4" UnSafe="False" WorkflowFileName="Workflows\EnregistrerRDVExcel.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PatientTelephone">[PatientTelephone]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PatientMotif">[PatientMotif]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">[DateRDV]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">[HeureRDV]</InArgument>
+                    <OutArgument x:TypeArguments="x:Boolean" x:Key="out_RDVConfirme">[RDVConfirme]</OutArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <ui:LogMessage DisplayName="[LOG] Étape 4 – Mise à jour agenda" sap2010:WorkflowViewState.IdRef="LogMessage_5" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 4 : Mise à jour de l'agenda du médecin&quot;]" />
+                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] MettreAJourAgenda" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="Workflows\MettreAJourAgenda.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">[DateRDV]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">[HeureRDV]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <ui:LogMessage DisplayName="[LOG] Étape 5 – Envoi notification" sap2010:WorkflowViewState.IdRef="LogMessage_6" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 5 : Envoi de la confirmation au patient&quot;]" />
+                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] EnvoyerNotificationPatient" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_6" UnSafe="False" WorkflowFileName="Workflows\EnvoyerNotificationPatient.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">[DateRDV]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">[HeureRDV]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PatientEmail">[PatientEmail]</InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <Assign DisplayName="[SET] Statut = Succès" sap2010:WorkflowViewState.IdRef="Assign_1">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[TransactionStatus]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">SUCCESS</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <ui:LogMessage DisplayName="[LOG] ✅ RDV Confirmé avec succès" sap2010:WorkflowViewState.IdRef="LogMessage_7" Level="Info" Message="[&quot;[RPA-RDV] ✅ Rendez-vous CONFIRMÉ pour &quot; + PatientNom + &quot; le &quot; + DateRDV + &quot; à &quot; + HeureRDV]" />
+                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] MettreAJourStatutDemande" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_8" UnSafe="False" WorkflowFileName="Workflows\MettreAJourStatutDemande.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PatientID">[PatientID]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_NouveauStatut">Traité</InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+              </Sequence>
+            </If.Then>
+            <If.Else>
+              <Sequence DisplayName="[ELSE] Aucun créneau disponible" sap2010:WorkflowViewState.IdRef="Sequence_2">
+                <Assign DisplayName="[SET] Statut = No Slot" sap2010:WorkflowViewState.IdRef="Assign_2">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[TransactionStatus]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">NO_SLOT</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <ui:LogMessage DisplayName="[LOG] ⚠️ Aucun créneau disponible" sap2010:WorkflowViewState.IdRef="LogMessage_8" Level="Warn" Message="[&quot;[RPA-RDV] ⚠️ Aucun créneau disponible – Notification secrétaire requise&quot;]" />
+                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] NotifierSecretaire" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_7" UnSafe="False" WorkflowFileName="Workflows\NotifierSecretaire.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+              </Sequence>
+            </If.Else>
+          </If>
+          <ui:LogMessage DisplayName="[LOG] === FIN DU TRAITEMENT ===" sap:VirtualizedContainerService.HintSize="382,166" sap2010:WorkflowViewState.IdRef="LogMessage_10" Level="Info" Message="[&quot;[RPA-RDV] Terminé pour le patient : &quot; + PatientNom]" />
         </Sequence>
       </If.Then>
       <If.Else>
-        <Sequence DisplayName="[ELSE] Aucun créneau disponible" sap2010:WorkflowViewState.IdRef="Sequence_2">
-          <Assign DisplayName="[SET] Statut = No Slot" sap2010:WorkflowViewState.IdRef="Assign_2">
-            <Assign.To>
-              <OutArgument x:TypeArguments="x:String">[TransactionStatus]</OutArgument>
-            </Assign.To>
-            <Assign.Value>
-              <InArgument x:TypeArguments="x:String">NO_SLOT</InArgument>
-            </Assign.Value>
-          </Assign>
-          <ui:LogMessage DisplayName="[LOG] ⚠️ Aucun créneau disponible" sap2010:WorkflowViewState.IdRef="LogMessage_8" Level="Warn" Message="[&quot;[RPA-RDV] ⚠️ Aucun créneau disponible – Notification secrétaire requise&quot;]" />
-          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[WF] NotifierSecretaire" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_7" UnSafe="False" WorkflowFileName="Workflows\NotifierSecretaire.xaml">
-            <ui:InvokeWorkflowFile.Arguments>
-              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[Config]</InArgument>
-              <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
-            </ui:InvokeWorkflowFile.Arguments>
-          </ui:InvokeWorkflowFile>
-        </Sequence>
+        <ui:LogMessage DisplayName="[LOG] Aucune demande" sap:VirtualizedContainerService.HintSize="382,141" sap2010:WorkflowViewState.IdRef="LogMessage_11" Level="Info" Message="[&quot;[RPA-RDV] Aucune demande de rendez-vous en attente dans le fichier Excel.&quot;]" />
       </If.Else>
     </If>
     <ui:LogMessage DisplayName="[LOG] === FIN DU PROCESSUS RPA ===" sap:VirtualizedContainerService.HintSize="450,166" sap2010:WorkflowViewState.IdRef="LogMessage_9" Level="Info" Message="[&quot;[RPA-RDV] === Processus terminé. Statut : &quot; + TransactionStatus + &quot; ===&quot;]" />

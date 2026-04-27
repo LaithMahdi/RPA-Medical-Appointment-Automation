@@ -67,7 +67,29 @@
         </InArgument>
       </ui:ReadRange.Range>
     </ui:ReadRange>
-    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Parcourir les demandes" sap:VirtualizedContainerService.HintSize="500,925" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_Demandes.Select(&quot;Statut = 'En attente'&quot;)]">
+    <ui:MultipleAssign DisplayName="[INIT] Initialisation des sorties" sap:VirtualizedContainerService.HintSize="500,242" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+      <ui:MultipleAssign.AssignOperations>
+        <scg:List x:TypeArguments="ui:AssignOperation" Capacity="8">
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[out_PatientNom]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_2">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[out_PatientID]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+        </scg:List>
+      </ui:MultipleAssign.AssignOperations>
+    </ui:MultipleAssign>
+    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Prendre la première demande en attente" sap:VirtualizedContainerService.HintSize="500,925" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_Demandes.Select(&quot;Statut = 'En attente'&quot;).Take(1)]">
       <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>
           <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />

@@ -10,36 +10,52 @@
   <sap2010:WorkflowViewState.IdRef>MettreAJourStatutDemande_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="30">
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>System</x:String>
       <x:String>System.Activities</x:String>
       <x:String>System.Activities.Statements</x:String>
-      <x:String>System</x:String>
       <x:String>System.Collections</x:String>
       <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
       <x:String>System.Data</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Xml.Serialization</x:String>
       <x:String>UiPath.Core</x:String>
       <x:String>UiPath.Core.Activities</x:String>
-      <x:String>System.Xml.Serialization</x:String>
       <x:String>UiPath.Excel</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
     </scg:List>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
     <scg:List x:TypeArguments="AssemblyReference" Capacity="30">
       <AssemblyReference>System.Activities</AssemblyReference>
-      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
       <AssemblyReference>System.Data</AssemblyReference>
-      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
-      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
       <AssemblyReference>System.Data.Common</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
       <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>NPOI.Core</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Mettre à Jour Statut Demande" sap:VirtualizedContainerService.HintSize="1281,1000" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Mettre à Jour Statut Demande" sap:VirtualizedContainerService.HintSize="1191,1004" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="v_CheminExcel" />
       <Variable x:TypeArguments="sd:DataTable" Name="dt_Demandes" />
       <Variable x:TypeArguments="x:Int32" Name="v_IndexLigne" />
     </Sequence.Variables>
-    <Assign DisplayName="[SET] Chemin Excel" sap:VirtualizedContainerService.HintSize="484,175" sap2010:WorkflowViewState.IdRef="Assign_1">
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Assign DisplayName="[SET] Chemin Excel" sap:VirtualizedContainerService.HintSize="452,175" sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[v_CheminExcel]</OutArgument>
       </Assign.To>
@@ -47,17 +63,17 @@
         <InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelDemandesPath"))]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:ReadRange AddHeaders="True" DataTable="[dt_Demandes]" DisplayName="[EXCEL] Lire Demandes" sap:VirtualizedContainerService.HintSize="484,218" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Demandes" WorkbookPath="[v_CheminExcel]">
+    <ui:ReadRange AddHeaders="True" DataTable="[dt_Demandes]" DisplayName="[EXCEL] Lire Demandes" sap:VirtualizedContainerService.HintSize="452,227" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Demandes" WorkbookPath="[v_CheminExcel]">
       <ui:ReadRange.Range>
         <InArgument x:TypeArguments="x:String">
           <Literal x:TypeArguments="x:String" Value="" />
         </InArgument>
       </ui:ReadRange.Range>
     </ui:ReadRange>
-    <ui:LookupDataTable CellValue="{x:Null}" LookupColumnIndex="{x:Null}" LookupDataColumn="{x:Null}" TargetColumnIndex="{x:Null}" TargetColumnName="{x:Null}" TargetDataColumn="{x:Null}" DataTable="[dt_Demandes]" DisplayName="[DATA] Chercher ID Patient" sap:VirtualizedContainerService.HintSize="484,331" sap2010:WorkflowViewState.IdRef="LookupDataTable_1" LookupColumnName="ID" LookupValue="[in_PatientID]" RowIndex="[v_IndexLigne]" />
-    <If Condition="[v_IndexLigne &lt;&gt; -1]" DisplayName="[IF] Patient trouvé ?" sap:VirtualizedContainerService.HintSize="484,276" sap2010:WorkflowViewState.IdRef="If_1">
+    <ui:LookupDataTable CellValue="{x:Null}" LookupColumnIndex="{x:Null}" LookupDataColumn="{x:Null}" TargetColumnIndex="{x:Null}" TargetColumnName="{x:Null}" TargetDataColumn="{x:Null}" DataTable="[dt_Demandes]" DisplayName="[DATA] Chercher ID Patient" sap:VirtualizedContainerService.HintSize="452,329" sap2010:WorkflowViewState.IdRef="LookupDataTable_1" LookupColumnName="ID" LookupValue="[in_PatientID]" RowIndex="[v_IndexLigne]" />
+    <If Condition="[v_IndexLigne &lt;&gt; -1]" DisplayName="[IF] Patient trouvé ?" sap:VirtualizedContainerService.HintSize="452,250" sap2010:WorkflowViewState.IdRef="If_1">
       <If.Then>
-        <Sequence sap:VirtualizedContainerService.HintSize="450,100" sap2010:WorkflowViewState.IdRef="Sequence_2">
+        <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="450,100" sap2010:WorkflowViewState.IdRef="Sequence_2">
           <Assign DisplayName="[SET] Statut = Traité" sap:VirtualizedContainerService.HintSize="416,115" sap2010:WorkflowViewState.IdRef="Assign_2">
             <Assign.To>
               <OutArgument x:TypeArguments="x:Object">[dt_Demandes.Rows(v_IndexLigne)("Statut")]</OutArgument>
@@ -66,10 +82,13 @@
               <InArgument x:TypeArguments="x:Object">[in_NouveauStatut]</InArgument>
             </Assign.Value>
           </Assign>
-          <ui:WriteRange AddHeaders="True" DataTable="[dt_Demandes]" DisplayName="[EXCEL] Enregistrer Statut" sap:VirtualizedContainerService.HintSize="416,148" sap2010:WorkflowViewState.IdRef="WriteRange_1" SheetName="Demandes" StartingCell="A1" WorkbookPath="[v_CheminExcel]" />
+          <ui:WriteRange DataTable="[dt_Demandes]" DisplayName="[EXCEL] Enregistrer Statut" sap:VirtualizedContainerService.HintSize="416,148" sap2010:WorkflowViewState.IdRef="WriteRange_1" SheetName="Demandes" StartingCell="A1" WorkbookPath="[v_CheminExcel]" />
           <ui:LogMessage sap:VirtualizedContainerService.HintSize="416,141" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Statut mis à jour en '&quot; + in_NouveauStatut + &quot;' pour le patient ID: &quot; + in_PatientID]" />
         </Sequence>
       </If.Then>
+      <If.Else>
+        <Sequence DisplayName="Else" sap2010:WorkflowViewState.IdRef="Sequence_3" />
+      </If.Else>
     </If>
   </Sequence>
 </Activity>

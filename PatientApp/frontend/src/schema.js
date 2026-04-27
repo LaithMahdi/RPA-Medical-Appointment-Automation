@@ -12,6 +12,7 @@ export const patientSchema = z.object({
     today.setHours(0, 0, 0, 0);
     return date >= today;
   }, { message: "La date ne peut pas être dans le passé" }),
+  appointmentTime: z.string().min(1, "Veuillez sélectionner un créneau"),
   gender: z.enum(["Masculin", "Féminin", "Autre"], {
     errorMap: () => ({ message: "Veuillez sélectionner un genre" }),
   }),

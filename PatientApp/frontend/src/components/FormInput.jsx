@@ -2,6 +2,7 @@ const FormInput = ({
   label,
   name,
   register,
+  registerOptions = {},
   error,
   icon: Icon,
   placeholder,
@@ -27,7 +28,10 @@ const FormInput = ({
           />
         )}
         {options.length > 0 ? (
-          <select {...register(name)} className={`${inputClassName} appearance-none`}>
+          <select
+            {...register(name, registerOptions)}
+            className={`${inputClassName} appearance-none`}
+          >
             <option value="">Sélectionnez un motif</option>
             {options.map((opt) => (
               <option key={opt} value={opt}>
@@ -37,14 +41,14 @@ const FormInput = ({
           </select>
         ) : isTextArea ? (
           <textarea
-            {...register(name)}
+            {...register(name, registerOptions)}
             rows={rows}
             className={inputClassName}
             placeholder={placeholder}
           />
         ) : (
           <input
-            {...register(name)}
+            {...register(name, registerOptions)}
             type={type}
             className={inputClassName}
             placeholder={placeholder}
