@@ -1,40 +1,61 @@
-import { Phone, Tag, Clock } from "lucide-react";
+import { Phone, Tag, Clock, CalendarDays } from "lucide-react";
 
 const AppointmentCard = ({ appointment }) => {
-  const statusClasses =
-    appointment.statut === "Traité"
-      ? "bg-green-50 text-green-700"
-      : "bg-orange-50 text-orange-700";
+  const isTreated = appointment.statut === "Traité";
+  const statusClasses = isTreated
+    ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+    : "bg-amber-50 text-amber-700 border-amber-100";
+
+  const safeDate = appointment.date ? new Date(appointment.date) : null;
+  const formattedDate =
+    safeDate && !Number.isNaN(safeDate.getTime())
+      ? safeDate.toLocaleDateString("fr-FR", {
+          weekday: "short",
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })
+      : appointment.date || "Date non précisée";
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all group border-b-4 border-b-blue-600">
+    <article className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group hover:-translate-y-0.5">
       <div className="flex justify-between items-start mb-4">
         <span className="px-3 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-full uppercase tracking-widest">
-          {appointment.id}
+          #{appointment.id || "N/A"}
         </span>
         <span
-          className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${statusClasses}`}
+          className={`px-3 py-1 border rounded-full text-[10px] font-bold uppercase tracking-widest ${statusClasses}`}
         >
-          {appointment.statut}
+          {appointment.statut || "Inconnu"}
         </span>
       </div>
 
       <h3 className="text-lg font-bold text-slate-800 mb-4">
-        {appointment.nom}
+        {appointment.nom || "Patient inconnu"}
       </h3>
 
       <div className="space-y-3">
         <div className="flex items-center gap-3 text-slate-600">
+          <CalendarDays size={16} className="text-slate-400" />
+          <span className="text-sm font-medium">{formattedDate}</span>
+        </div>
+        <div className="flex items-center gap-3 text-slate-600">
           <Clock size={16} className="text-slate-400" />
-          <span className="text-sm">{appointment.date}</span>
+          <span className="text-sm">
+            {appointment.heure || "Heure non précisée"}
+          </span>
         </div>
         <div className="flex items-center gap-3 text-slate-600">
           <Phone size={16} className="text-slate-400" />
-          <span className="text-sm">{appointment.telephone}</span>
+          <span className="text-sm">
+            {appointment.telephone || "Telephone non fourni"}
+          </span>
         </div>
         <div className="flex items-center gap-3 text-slate-600">
           <Tag size={16} className="text-slate-400" />
-          <span className="text-sm italic">{appointment.motif}</span>
+          <span className="text-sm italic">
+            {appointment.motif || "Sans motif"}
+          </span>
         </div>
       </div>
 
@@ -46,7 +67,7 @@ const AppointmentCard = ({ appointment }) => {
           {appointment.notes || "Aucune note additionnelle."}
         </p>
       </div>
-    </div>
+    </article>
   );
 };
 
