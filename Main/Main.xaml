@@ -1,6 +1,5 @@
 <Activity mc:Ignorable="sap sap2010" x:Class="UiPath_RDV_Main" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="Config" Type="InOutArgument(scg:Dictionary(x:String, x:Object))" />
   </x:Members>
   <sap2010:WorkflowViewState.IdRef>Main</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
@@ -76,7 +75,7 @@
     <ui:LogMessage DisplayName="[LOG] Démarrage du Robot RPA – Prise de RDV" sap:VirtualizedContainerService.HintSize="450,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] === Démarrage du processus de prise de rendez-vous médical ===&quot;]" />
     <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="[INIT] Chargement de la configuration" sap:VirtualizedContainerService.HintSize="450,177" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Workflows\InitAllSettings.xaml">
       <ui:InvokeWorkflowFile.Arguments>
-        <InArgument x:TypeArguments="x:String" x:Key="in_ConfigFilePath">Data\Config.xlsx</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_ConfigFilePath">["Data\Config.xlsx"]</InArgument>
         <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="out_Config">[Config]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>

@@ -80,7 +80,7 @@
       <AssemblyReference>System.Runtime.Numerics</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Initialisation – Chargement Config.xlsx" sap:VirtualizedContainerService.HintSize="1281,1587" sap2010:WorkflowViewState.IdRef="Sequence_3">
+  <Sequence DisplayName="Initialisation – Chargement Config.xlsx" sap:VirtualizedContainerService.HintSize="1597,2156" sap2010:WorkflowViewState.IdRef="Sequence_3">
     <Sequence.Variables>
       <Variable x:TypeArguments="sd:DataTable" Name="dt_Config" />
       <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)" Name="v_Config" />
@@ -90,6 +90,7 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="536,175" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;Chemin Config reçu : '&quot; + in_ConfigFilePath + &quot;'&quot;]" />
     <Assign DisplayName="[INIT] Créer dictionnaire Config" sap:VirtualizedContainerService.HintSize="536,175" sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
         <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[v_Config]</OutArgument>
@@ -98,7 +99,19 @@
         <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[New Dictionary(Of String, Object)()]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Ouvrir Config.xlsx" sap:VirtualizedContainerService.HintSize="536,420" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" SensitivityOperation="None" WorkbookPath="Data\Config.xlsx">
+    <If Condition="[String.IsNullOrWhiteSpace(in_ConfigFilePath)]" DisplayName="[IF] Chemin vide ?" sap:VirtualizedContainerService.HintSize="536,394" sap2010:WorkflowViewState.IdRef="If_2">
+      <If.Then>
+        <Assign DisplayName="[SET] Chemin par défaut" sap:VirtualizedContainerService.HintSize="450,143" sap2010:WorkflowViewState.IdRef="Assign_4">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[in_ConfigFilePath]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">Data\Config.xlsx</InArgument>
+          </Assign.Value>
+        </Assign>
+      </If.Then>
+    </If>
+    <ui:ExcelApplicationScope SensitivityLabel="{x:Null}" DisplayName="[EXCEL] Ouvrir Config.xlsx" sap:VirtualizedContainerService.HintSize="536,420" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" ReadOnly="True" SensitivityOperation="None" Visible="False" WorkbookPath="[in_ConfigFilePath]">
       <ui:ExcelApplicationScope.Body>
         <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
@@ -110,7 +123,7 @@
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               </scg:Dictionary>
             </sap:WorkflowViewStateService.ViewState>
-            <ui:ReadRange AddHeaders="True" DataTable="[dt_Config]" DisplayName="[EXCEL] Lire feuille Config" sap:VirtualizedContainerService.HintSize="416,218" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Config" WorkbookPathResource="[@&quot;Data\Config.xlsx&quot;]">
+            <ui:ReadRange AddHeaders="True" DataTable="[dt_Config]" DisplayName="[EXCEL] Lire feuille Config" sap:VirtualizedContainerService.HintSize="416,218" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Config" WorkbookPath="[in_ConfigFilePath]">
               <ui:ReadRange.Range>
                 <InArgument x:TypeArguments="x:String">
                   <Literal x:TypeArguments="x:String" Value="" />

@@ -1,6 +1,8 @@
+Workflows/InitAllSettings.xaml|639128802783685940
+Main/Main.xaml|639128803428382474
+Workflows/LireDemandesExcel.xaml|639128805644188769
 Workflows/MettreAJourAgenda.xaml|639120484477458081
 Workflows/NotifierSecretaire.xaml|639120484477468078
-Workflows/LireDemandesExcel.xaml|639120488796256250
-Workflows/VerifierDisponibiliteAgenda.xaml|639120484477468078
-Workflows/InitAllSettings.xaml|639120500802099072
-Main/Main.xaml|639120484477418078
+Workflows/EnregistrerRDVExcel.xaml|639128805911417776
+Workflows/EnvoyerNotificationPatient.xaml|639128808123867834
+Workflows/VerifierDisponibiliteAgenda.xaml|639128805664322748

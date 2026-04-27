@@ -78,7 +78,7 @@
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               </scg:Dictionary>
             </sap:WorkflowViewStateService.ViewState>
-            <ui:ReadRange AddHeaders="True" DataTable="[dt_Agenda]" DisplayName="[EXCEL] Lire feuille Agenda" sap:VirtualizedContainerService.HintSize="416,111" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Agenda" WorkbookPath="Data\Agenda_Medecin.xlsx">
+            <ui:ReadRange AddHeaders="True" DataTable="[dt_Agenda]" DisplayName="[EXCEL] Lire feuille Agenda" sap:VirtualizedContainerService.HintSize="416,111" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Agenda" WorkbookPath="[v_CheminAgenda]">
               <ui:ReadRange.Range>
                 <InArgument x:TypeArguments="x:String">
                   <Literal x:TypeArguments="x:String" Value="" />
