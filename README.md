@@ -1,9 +1,10 @@
 # 🩺 RPA · Gestion Automatisée des Rendez-vous Médicaux
 
-> **Robot UiPath** pour l'automatisation complète du cycle de vie des rendez-vous dans un cabinet médical — de la réception de la demande patient jusqu'à la confirmation par email, en passant par la vérification de l'agenda et la mise à jour des fichiers.
+> **Système complet** combinant un robot UiPath, une application web React et un backend Node.js pour automatiser le cycle de vie des rendez-vous dans un cabinet médical.
 
 [![UiPath](https://img.shields.io/badge/UiPath-Studio-F67200?style=for-the-badge&logo=uipath&logoColor=white)](https://www.uipath.com/)
-[![VB.NET](https://img.shields.io/badge/Language-VB.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://docs.microsoft.com/en-us/dotnet/visual-basic/)
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Node.js](https://img.shields.io/badge/Backend-Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Excel](https://img.shields.io/badge/Data-Excel%20Workbook-217346?style=for-the-badge&logo=microsoft-excel&logoColor=white)](https://www.microsoft.com/en-us/microsoft-365/excel)
 [![SMTP](https://img.shields.io/badge/Email-Gmail%20SMTP-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](https://support.google.com/mail/answer/7126229)
 
@@ -12,448 +13,286 @@
 ## 📋 Table des Matières
 
 1. [Vue d'ensemble](#-vue-densemble)
-2. [Scénario Réel : Avant & Après le RPA](#-scénario-réel--avant--après-le-rpa)
-3. [Analyse du Gain de Temps](#-analyse-du-gain-de-temps)
-4. [Fonctionnalités](#-fonctionnalités)
-5. [Architecture du Projet](#-architecture-du-projet)
-6. [Flux d'Exécution](#-flux-dexécution)
-7. [Description des Workflows](#-description-des-workflows)
-8. [Structure des Données](#-structure-des-données)
+2. [Architecture Globale du Système](#-architecture-globale-du-système)
+3. [PatientApp — Application Web](#-patientapp--application-web)
+4. [Robot UiPath — Processus Automatisé](#-robot-uipath--processus-automatisé)
+5. [Gestion des Conflits & Reprogrammation](#-gestion-des-conflits--reprogrammation)
+6. [Structure des Données (Fichiers Excel)](#-structure-des-données-fichiers-excel)
+7. [Description des Workflows UiPath](#-description-des-workflows-uipath)
+8. [Flux d'Exécution](#-flux-dexécution)
 9. [Configuration SMTP](#-configuration-smtp--email)
-10. [Gestion des Erreurs & Robustesse](#-gestion-des-erreurs--robustesse)
-11. [Prérequis & Installation](#-prérequis--installation)
-12. [Paramétrage de Config.xlsx](#-paramétrage-de-configxlsx)
-13. [Exécution & Logs](#-exécution--logs)
-14. [Auteur](#-auteur)
+10. [Prérequis & Installation](#-prérequis--installation)
+11. [Paramétrage de Config.xlsx](#-paramétrage-de-configxlsx)
+12. [Auteur](#-auteur)
 
 ---
 
 ## 🌟 Vue d'Ensemble
 
-Ce projet est une solution **RPA (Robotic Process Automation)** développée avec **UiPath Studio** pour digitaliser et automatiser entièrement le processus de prise de rendez-vous médicaux. Il élimine les tâches manuelles répétitives de la secrétaire médicale : vérification de l'agenda, enregistrement des patients, et envoi de confirmations.
+Ce projet est une solution **RPA (Robotic Process Automation)** combinant :
+
+- Un **formulaire web React** pour que les patients puissent soumettre leurs demandes de rendez-vous
+- Un **backend Node.js/Express** qui enregistre les demandes dans Excel et expose une API pour le tableau de bord
+- Un **robot UiPath** qui traite les demandes automatiquement : vérification de l'agenda, confirmation ou reprogrammation, mise à jour des fichiers et envoi d'emails
 
 ### Problème Résolu
 
 | Avant (Manuel) | Après (RPA) |
 |---|---|
-| Vérification manuelle de l'agenda | ✅ Scan automatique du premier créneau libre |
-| Appels téléphoniques de confirmation | ✅ Email automatique personnalisé |
-| Risque de double réservation | ✅ Mise à jour atomique de l'agenda |
+| Vérification manuelle de l'agenda | ✅ Scan automatique des créneaux |
+| Risque de double réservation | ✅ Détection de conflits + reprogrammation |
+| Appels téléphoniques de confirmation | ✅ Email HTML automatique personnalisé |
 | Aucune traçabilité | ✅ Log d'exécution complet dans Excel |
-| Dépendant d'une présence humaine | ✅ Fonctionne 24h/24 sans intervention |
+| Pas de portail patient | ✅ Application web moderne avec tableau de bord |
 
 ---
 
-## 🎭 Scénario Réel : Avant & Après le RPA
-
-> Les deux scénarios ci-dessous décrivent **la même journée** dans le même cabinet médical — une fois vécue par la secrétaire Yasmine sans RPA, et une fois avec le robot actif.
-
----
-
-### 👥 Personnages
-
-| Personnage | Rôle |
-|---|---|
-| **Yasmine** | Secrétaire médicale du cabinet |
-| **Dr. Karim Benali** | Médecin généraliste |
-| **M. Tariq Mansouri** | Patient souhaitant un rendez-vous |
-| **🤖 RPA Robot** | Le robot UiPath (dans le scénario "Avec RPA") |
-
----
-
-### ❌ SCÉNARIO 1 — Processus Manuel (Sans RPA)
-
-> 📅 **Lundi matin, 08h47** — Le cabinet ouvre. Le téléphone sonne déjà.
-
-**08h47** — M. Mansouri appelle le cabinet.
-
-> 🧑 *"Bonjour, je voudrais prendre un rendez-vous avec le Dr. Benali pour une consultation générale."*
-
-**08h48** — Yasmine décroche, pose son café, et ouvre le classeur Excel de l'agenda sur son ordinateur.
-
-> 👩 *"Bien sûr monsieur, un instant s'il vous plaît..."*
-
-Elle fait défiler manuellement les lignes de l'agenda Excel, ligne par ligne, cherchant visuellement une cellule marquée "Libre".
-
-```
-[Yasmine scrolle l'agenda Excel...]
-Lundi    09:00  → Réservé  (M. Hamidi)
-Lundi    09:30  → Réservé  (Mme. Saidi)
-Lundi    10:00  → Réservé  (M. Bouazza)
-Lundi    10:30  → Réservé  (Mme. Tlili)
-Lundi    11:00  → Libre    ← trouvé après 3 minutes de recherche
-```
-
-**08h51** — Yasmine trouve enfin un créneau.
-
-> 👩 *"J'ai un créneau disponible lundi à 11h00, ça vous convient ?"*
-> 🧑 *"Oui parfait !"*
-
-**08h52** — Yasmine doit maintenant accomplir 5 tâches manuelles :
-
-1. Ouvrir un **second fichier Excel** (liste des patients) et ajouter manuellement une nouvelle ligne
-2. Retourner sur l'agenda et **modifier manuellement** la cellule 11h00 → `"Réservé – Mansouri"`
-3. Raccrocher, puis ouvrir Gmail et rédiger un **email de confirmation à la main**
-4. Copier-coller le nom, la date, l'heure dans le corps du message
-5. Envoyer l'email, puis mettre à jour le registre des logs
-
-**09h04** — Transaction terminée. **Durée totale : ~17 minutes.**
-
-> ⚠️ **Problème 1** : Pendant ce temps, 2 autres patients ont appelé et sont tombés sur le répondeur.
-> ⚠️ **Problème 2** : Yasmine a oublié de remplir le fichier `Execution_Log.xlsx` — aucune traçabilité.
-> ⚠️ **Problème 3** : Un collègue a ouvert l'agenda Excel en même temps → conflit de version, les modifications de Yasmine sont écrasées.
-> ⚠️ **Problème 4** : Une faute de frappe dans le nom du patient → l'email part avec "Mansori" au lieu de "Mansouri".
-
----
-
-### ✅ SCÉNARIO 2 — Processus Automatisé (Avec RPA)
-
-> 📅 **Lundi matin, 08h47** — M. Mansouri soumet sa demande via le formulaire. Elle est enregistrée automatiquement dans `Demandes_Patients.xlsx`.
-
-**08h47:00** — La demande entre dans `Demandes_Patients.xlsx`. Le robot détecte la nouvelle ligne.
-
-**08h47:03** — Le robot UiPath se déclenche.
-
-```
-[RPA-RDV] === Démarrage du processus de prise de rendez-vous médical ===
-[RPA-RDV] ÉTAPE 1 : Lecture du fichier Excel des demandes
-  → Patient détecté : Tariq Mansouri | Motif : Consultation générale
-[RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin
-  → Scan de l'agenda en cours...
-  → Créneau libre trouvé : Lundi 02 Juin 2025 à 11:00 ✓
-[RPA-RDV] ÉTAPE 3 : Enregistrement du rendez-vous dans Excel
-  → Nouvelle ligne ajoutée dans Historique_Patients.xlsx ✓
-[RPA-RDV] ÉTAPE 4 : Mise à jour de l'agenda du médecin
-  → Cellule Lundi 11:00 → "Réservé – Mansouri" ✓
-[RPA-RDV] ÉTAPE 5 : Envoi de la confirmation au patient
-  → Email envoyé à tariq.mansouri@email.com ✓
-[RPA-RDV] ✅ Rendez-vous CONFIRMÉ pour Tariq Mansouri le 02/06/2025 à 11:00
-[RPA-RDV] === Processus terminé. Statut : SUCCESS ===
-```
-
-**08h47:45** — M. Mansouri reçoit cet email dans sa boîte de réception :
-
-```
-────────────────────────────────────────────────────────
-De      : Cabinet Médical Dr. Benali <cabinet@gmail.com>
-À       : tariq.mansouri@email.com
-Objet   : ✅ Confirmation de votre rendez-vous médical
-────────────────────────────────────────────────────────
-
-Bonjour M. Mansouri,
-
-Votre rendez-vous avec le Dr. Karim Benali est confirmé :
-
-  📅 Date  : Lundi 02 Juin 2025
-  🕐 Heure : 11h00
-  📍 Lieu  : Cabinet Médical, 14 Rue Ibn Khaldoun, Tunis
-
-Merci de vous présenter 5 minutes avant l'heure prévue.
-Veuillez apporter votre carnet de santé et votre pièce d'identité.
-
-Cordialement,
-Cabinet Médical Dr. Benali
-────────────────────────────────────────────────────────
-```
-
-**08h47:45** — Transaction 100% terminée. **Durée totale : 45 secondes.**
-
-> ✅ Yasmine n'a **rien eu à faire** — elle accueillait le premier patient du matin.
-> ✅ L'agenda est mis à jour **sans aucun conflit** de fichier.
-> ✅ Le log est **automatiquement renseigné** dans `Execution_Log.xlsx` avec horodatage.
-> ✅ Zéro faute de frappe — les données viennent directement du formulaire patient.
-
----
-
-### 🚨 Cas Limite — Agenda Entièrement Plein
-
-> Que se passe-t-il si **tous les créneaux du Dr. Benali sont réservés** ?
-
-**Sans RPA** : Yasmine rappelle le patient, s'excuse, cherche un autre créneau à la main, propose un autre jour... temps perdu, patient potentiellement mécontent.
-
-**Avec RPA** :
-
-```
-[RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin
-  → Scan complet de l'agenda...
-  → ⚠️ Aucun créneau disponible cette semaine
-[RPA-RDV] ⚠️ Aucun créneau disponible – Notification secrétaire requise
-  → Email d'alerte envoyé à yasmine@cabinet.com ✓
-  → TransactionStatus = NO_SLOT
-[RPA-RDV] === Processus terminé. Statut : NO_SLOT ===
-```
-
-Yasmine reçoit une alerte instantanée avec le nom du patient et son motif, et peut rappeler **proactivement** pour proposer une alternative — sans avoir perdu de temps à fouiller l'agenda.
-
----
-
-## ⏱️ Analyse du Gain de Temps
-
-### Par Transaction (1 Rendez-vous)
-
-| Étape du Processus | ❌ Manuel (Yasmine) | ✅ Avec RPA | ⚡ Gain |
-|---|---|---|---|
-| Réception et lecture de la demande | 2 min | 3 sec | **-1 min 57 sec** |
-| Recherche créneau dans l'agenda | 3 min | 8 sec | **-2 min 52 sec** |
-| Enregistrement dans la liste patients | 2 min | 5 sec | **-1 min 55 sec** |
-| Mise à jour de l'agenda | 1 min | 4 sec | **-56 sec** |
-| Rédaction et envoi email confirmation | 4 min | 6 sec | **-3 min 54 sec** |
-| Mise à jour du log d'exécution | 3 min | 2 sec | **-2 min 58 sec** |
-| **TOTAL** | **~15–17 min** | **~28–45 sec** | **🏆 Réduction de ~96%** |
-
----
-
-### Sur une Semaine Typique (Cabinet Moyen = 40 demandes/semaine)
-
-| Métrique | ❌ Sans RPA | ✅ Avec RPA |
-|---|---|---|
-| Demandes traitées/semaine | 40 | 40 |
-| Temps moyen par demande | 16 min | 40 sec |
-| **Temps total consacré/semaine** | **~640 min (10h40)** | **~27 min** |
-| **Temps libéré pour Yasmine** | — | **🏆 +613 min = +10h13/semaine** |
-| Erreurs de saisie estimées | 3 à 5 / semaine | **0** |
-| Doubles réservations accidentelles | 1 à 2 / mois | **0** |
-| Disponibilité du traitement | Heures d'ouverture uniquement | **24h/24 — 7j/7** |
-| Réponse au patient | 15 à 60 min | **< 1 minute** |
-
----
-
-### Sur une Année Complète
-
-```
-10h13 libérées par semaine × 52 semaines
-= 531 heures économisées par an
-= 66 journées de travail de 8h récupérées
-  pour un seul cabinet médical.
-```
-
-| Indicateur Annuel | Valeur Estimée |
-|---|---|
-| ⏰ Temps secrétaire libéré | **~531 heures/an** |
-| 📅 Équivalent en jours ouvrés | **~66 jours ouvrés** |
-| ❌ Erreurs de saisie évitées | **~200 erreurs/an** |
-| 📧 Emails de confirmation envoyés | **~2 000 emails automatiques** |
-| 🔔 Alertes "agenda plein" gérées | **~50 alertes proactives** |
-| 💰 Coût humain évité (estimé à 15€/h) | **~7 965 €/an** |
-
----
-
-### Ce que Yasmine Fait Maintenant avec ce Temps Récupéré
-
-Le robot prend en charge toutes les tâches répétitives et sans valeur ajoutée. Yasmine peut enfin se concentrer sur ce qui compte vraiment :
-
-| Avant le RPA ❌ | Après le RPA ✅ |
-|---|---|
-| Passer des appels de confirmation | Accueillir les patients avec attention |
-| Copier-coller des données entre fichiers | Préparer les dossiers médicaux en amont |
-| Chercher manuellement dans l'agenda | Gérer les renouvellements d'ordonnances |
-| Rédiger des emails répétitifs | Traiter les cas complexes et urgents |
-| Corriger des erreurs de saisie | Assurer le suivi des patients chroniques |
-
-> *"Le robot fait le travail répétitif. Yasmine fait le travail humain."*
-
----
-
-## ✨ Fonctionnalités
-
-- 📥 **Lecture automatique** des demandes patients depuis un fichier Excel dédié
-- 🗓️ **Vérification intelligente** du premier créneau disponible dans l'agenda du médecin
-- 💾 **Enregistrement sécurisé** du RDV dans le fichier historique patients
-- 🔄 **Mise à jour en temps réel** de l'agenda du médecin (créneau marqué "Réservé")
-- 📧 **Envoi automatique** d'un email de confirmation personnalisé au patient
-- 🔔 **Alerte secrétaire** si aucun créneau n'est disponible
-- 📊 **Journalisation complète** de chaque transaction dans `Execution_Log.xlsx`
-- ⚙️ **Configuration centralisée** via `Config.xlsx` — zéro code à modifier
-
----
-
-## 📁 Architecture du Projet
-
-```
-mini-project-rpa/
-│
-├── 📄 Main.xaml                          ← Point d'entrée principal du robot
-│
-├── 📂 Workflows/
-│   ├── 📄 InitAllSettings.xaml           ← Chargement configuration
-│   ├── 📄 LireDemandesExcel.xaml         ← Lecture des patients en attente
-│   ├── 📄 VerifierDisponibiliteAgenda.xaml ← Recherche créneau libre
-│   ├── 📄 EnregistrerRDVExcel.xaml       ← Enregistrement du rendez-vous
-│   ├── 📄 MettreAJourAgenda.xaml         ← Mise à jour agenda médecin
-│   ├── 📄 EnvoyerNotificationPatient.xaml← Envoi email confirmation
-│   └── 📄 NotifierSecretaire.xaml        ← Alerte si aucun créneau
-│
-├── 📂 Data/
-│   ├── 📊 Config.xlsx                    ← Paramètres globaux du robot
-│   ├── 📊 Demandes_Patients.xlsx         ← Input : liste des demandes
-│   ├── 📊 Agenda_Medecin.xlsx            ← État des disponibilités
-│   └── 📊 Execution_Log.xlsx             ← Journal des transactions
-│
-└── 📄 project.json                       ← Métadonnées UiPath Studio
-```
-
----
-
-## 🔄 Flux d'Exécution
+## 🏗️ Architecture Globale du Système
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         MAIN.XAML                               │
+│                        PATIENT (navigateur)                      │
+│              http://localhost:5173  (React Frontend)             │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │ POST /api/submit
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   BACKEND (Node.js / Express)                    │
+│                   http://localhost:8080                          │
+│                                                                  │
+│  POST /api/submit    → Écrit dans Demandes_Patients.xlsx        │
+│  GET  /api/appointments → Lit Demandes + RendezVous_Confirmes   │
+│  POST /api/login     → Authentification Médecin / Secrétaire    │
+└──────────────┬───────────────────────────────────────────────── ┘
+               │ écrit/lit
+               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   FICHIERS EXCEL (Data/)                         │
+│                                                                  │
+│  Demandes_Patients.xlsx    ← input des demandes patients        │
+│  Agenda_Medecin.xlsx       ← état des créneaux du médecin       │
+│  RendezVous_Confirmes.xlsx ← output confirmé par le robot       │
+│  Config.xlsx               ← paramètres globaux du robot        │
+└──────────────┬──────────────────────────────────────────────────┘
+               │ lit/écrit
+               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     ROBOT UIPATH (Main.xaml)                    │
+│                                                                  │
+│  1. InitAllSettings        → Charge Config.xlsx                 │
+│  2. LireDemandesExcel      → Lit le 1er patient "En attente"    │
+│  3. VerifierDisponibilite  → Cherche créneau + détecte conflit  │
+│  4. EnregistrerRDVExcel    → Écrit dans RendezVous_Confirmes    │
+│  5. MettreAJourAgenda      → Marque créneau "Occupé"            │
+│  6. EnvoyerNotification    → Email confirmation ou reprog.      │
 └─────────────────────────────────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────┐
-│  1. InitAllSettings │  ← Charge Config.xlsx → Dictionnaire Config
-└─────────────────────┘
-         │
-         ▼
-┌─────────────────────┐
-│  2. LireDemandesEx  │  ← Lit Demandes_Patients.xlsx → PatientNom,
-│     cel             │    PatientTelephone, PatientMotif
-└─────────────────────┘
-         │
-         ▼
-┌──────────────────────────┐
-│  3. VerifierDisponibilite│  ← Scanne Agenda_Medecin.xlsx →
-│     Agenda               │    DateRDV, HeureRDV, DisponibiliteTrouvee
-└──────────────────────────┘
-         │
-         ├──── DisponibiliteTrouvee = TRUE ────────────────────────┐
-         │                                                         │
-         ▼                                                         │
-┌──────────────────────┐                               ┌──────────────────────┐
-│  4. EnregistrerRDV   │                               │  ELSE: NotifierSec   │
-│     Excel            │                               │  retaire             │
-└──────────────────────┘                               │  (aucun créneau)     │
-         │                                             └──────────────────────┘
-         ▼
-┌──────────────────────┐
-│  5. MettreAJour      │  ← Marque créneau "Réservé" dans l'agenda
-│     Agenda           │
-└──────────────────────┘
-         │
-         ▼
-┌──────────────────────┐
-│  6. EnvoyerNotifica  │  ← Email SMTP personnalisé au patient
-│     tionPatient      │
-└──────────────────────┘
-         │
-         ▼
-    TransactionStatus = "SUCCESS" / "NO_SLOT"
-    [LOG] === FIN DU PROCESSUS ===
 ```
 
 ---
 
-## 🧩 Description des Workflows
+## 💻 PatientApp — Application Web
 
-### 1. `Main.xaml` — Chef d'Orchestre
+L'application web est divisée en deux parties :
 
-**Rôle** : Séquence maître qui appelle tous les sous-workflows dans l'ordre logique et gère la variable `TransactionStatus`.
+### Backend (`PatientApp/backend/`)
 
-**Variables déclarées** :
+Construit avec **Node.js + Express**. Il utilise la librairie `xlsx` pour lire/écrire les fichiers Excel.
+
+**Variables d'environnement (`.env`)** :
+```env
+DOCTOR_EMAIL=medecin@example.com
+DOCTOR_PASSWORD=motdepasse_medecin
+SECRETARY_EMAIL=secretaire@example.com
+SECRETARY_PASSWORD=motdepasse_secretaire
+PORT=8080
+```
+
+**Endpoints API** :
+
+| Méthode | Route | Description |
+|---|---|---|
+| `POST` | `/api/login` | Authentification médecin/secrétaire |
+| `GET` | `/api/appointments` | Liste des rendez-vous avec détection de reprogrammation |
+| `POST` | `/api/submit` | Enregistre une nouvelle demande patient dans Excel |
+| `GET` | `/api/debug-confirmed` | Debug : contenu brut de `RendezVous_Confirmes.xlsx` |
+
+**Logique de correspondance (`/api/appointments`)** :
+
+Le backend croise deux fichiers Excel pour détecter si un patient a été reprogrammé :
+
+1. Lit `Demandes_Patients.xlsx` (les demandes originales)
+2. Lit `RendezVous_Confirmes.xlsx` (les confirmations du robot)
+3. Pour chaque demande, il cherche l'entrée correspondante dans les confirmations par :
+   - **Nom** (insensible à la casse)
+   - **Téléphone** (8 derniers chiffres, insensible au format)
+4. Si une correspondance est trouvée avec une **heure différente** → `isRescheduled: true`
+
+```js
+// Exemple de réponse enrichie
+{
+  "nom": "Yassine Mahdi",
+  "heure": "10:00",           // heure confirmée par le robot
+  "requestedHeure": "09:30",  // heure demandée par le patient
+  "isRescheduled": true       // le créneau a été changé
+}
+```
+
+**Lancement** :
+```bash
+cd PatientApp/backend
+bun run dev   # ou: npm run dev
+```
+
+---
+
+### Frontend (`PatientApp/frontend/`)
+
+Construit avec **React + Vite**. Il permet aux patients de soumettre des demandes et au médecin/secrétaire de visualiser le tableau de bord.
+
+**Pages principales** :
+
+| Page | Route | Description |
+|---|---|---|
+| Formulaire Patient | `/` | Formulaire de demande de rendez-vous |
+| Login | `/login` | Authentification Médecin / Secrétaire |
+| Agenda | `/agenda` | Tableau de bord des rendez-vous |
+
+**Variable d'environnement** :
+```env
+VITE_API_URL=http://localhost:8080/api
+```
+
+**Fonctionnalités du tableau de bord (`Agenda`)** :
+- 🔍 Recherche par nom ou ID
+- 🔖 Filtrage par statut (`Tous`, `En attente`, `Traité`)
+- 🔄 Badge **Reprogrammé** en orange si le robot a changé l'heure
+- ~~Heure barrée~~ affichée quand un créneau a été modifié
+- 📊 Statistiques en temps réel (total, en attente, traité)
+
+**Lancement** :
+```bash
+cd PatientApp/frontend
+npm run dev
+```
+
+---
+
+## 🤖 Robot UiPath — Processus Automatisé
+
+Le robot traite les demandes en attente dans `Demandes_Patients.xlsx` et gère automatiquement les conflits.
+
+### Déclenchement
+
+Le robot lit uniquement la **première demande** avec le statut `En attente`. Il est conçu pour être exécuté une fois par demande (ex: planifié toutes les 5 minutes via UiPath Orchestrator ou déclenché manuellement).
+
+### Variables Principales dans `Main.xaml`
 
 | Variable | Type | Description |
 |---|---|---|
 | `Config` | `Dictionary(String, Object)` | Paramètres chargés depuis Config.xlsx |
 | `PatientNom` | `String` | Nom complet du patient |
 | `PatientTelephone` | `String` | Numéro de téléphone |
+| `PatientEmail` | `String` | Email du patient |
 | `PatientMotif` | `String` | Motif de consultation |
-| `DateRDV` | `String` | Date du rendez-vous trouvé |
-| `HeureRDV` | `String` | Heure du rendez-vous trouvé |
-| `RDVConfirme` | `Boolean` | Confirmation d'enregistrement |
-| `DisponibiliteTrouvee` | `Boolean` | Indique si un créneau est libre |
-| `TransactionStatus` | `String` | `SUCCESS` ou `NO_SLOT` |
+| `HeureDemande` | `String` | Heure souhaitée par le patient |
+| `DateRDV` | `String` | Date du rendez-vous confirmé |
+| `HeureRDV` | `String` | Heure du rendez-vous confirmé |
+| `IsRescheduled` | `Boolean` | `True` si reprogrammation nécessaire |
+| `DisponibiliteTrouvee` | `Boolean` | `True` si un créneau est disponible |
+| `TransactionStatus` | `String` | `SUCCESS` / `NO_SLOT` |
 
 ---
 
-### 2. `InitAllSettings.xaml` — Chargement Configuration
+## 🔄 Gestion des Conflits & Reprogrammation
 
-**Rôle** : Ouvre `Config.xlsx`, lit la feuille `Config` et charge toutes les paires `Clé / Valeur` dans un dictionnaire partagé.
+C'est la **fonctionnalité principale** ajoutée dans cette version. Le robot gère le cas où deux patients demandent le même créneau.
 
-**Arguments** :
+### Scénario de Conflit
 
-| Argument | Direction | Type | Description |
-|---|---|---|---|
-| `in_ConfigFilePath` | In | `String` | Chemin vers Config.xlsx |
-| `out_Config` | Out | `Dictionary(String, Object)` | Dictionnaire peuplé |
+```
+Demande 1 — Laith Mahdi      → 09:30  → CONFIRMÉ  ✅
+Demande 2 — Yassine Mahdi    → 09:30  → OCCUPÉ → reprogrammé à 10:00 🔄
+```
 
-**Logique interne** :
-1. Crée un nouveau dictionnaire vide `v_Config`
-2. Ouvre Config.xlsx en mode **lecture seule** et **invisible** (aucun conflit)
-3. Lit toute la feuille `Config` dans un `DataTable`
-4. Itère chaque ligne : si la colonne `Cle` est non-vide → ajoute `Cle/Valeur` dans le dictionnaire
-5. Retourne le dictionnaire via `out_Config`
-6. Log : `"Configuration chargée – N paramètres"`
+### Logique dans `VerifierDisponibiliteAgenda.xaml`
 
----
+1. Le workflow reçoit `in_HeureSouhaitee` (l'heure demandée par le patient)
+2. Il scanne `Agenda_Medecin.xlsx` pour trouver le **premier créneau `Libre`**
+3. Si le créneau trouvé est **différent** de l'heure demandée → `out_IsRescheduled = True`
+4. L'heure confirmée (`out_HeureRDV`) est toujours le premier créneau réellement disponible
 
-### 3. `LireDemandesExcel.xaml` — Lecture Patients
+### Emails Différenciés
 
-**Rôle** : Lit le fichier `Demandes_Patients.xlsx` et extrait les informations du prochain patient à traiter (statut "En attente").
+Le workflow `EnvoyerNotificationPatient.xaml` envoie deux types d'emails selon le résultat :
 
-**Arguments** :
+| Cas | Template | Couleur |
+|---|---|---|
+| Créneau confirmé tel que demandé | Confirmation | 🔵 Bleu |
+| Créneau reprogrammé | Reprogrammation | 🟠 Orange |
 
-| Argument | Direction | Type | Description |
-|---|---|---|---|
-| `in_Config` | In | `Dictionary(String, Object)` | Accès au chemin du fichier |
-| `out_PatientNom` | Out | `String` | Nom du patient |
-| `out_PatientTelephone` | Out | `String` | Téléphone du patient |
-| `out_PatientMotif` | Out | `String` | Motif de la consultation |
+L'email de reprogrammation indique explicitement :
+- L'heure demandée originale
+- Le nouveau créneau attribué
+- Un message d'excuse et d'explication
 
----
+### Mise à Jour de l'Agenda (`MettreAJourAgenda.xaml`)
 
-### 4. `VerifierDisponibiliteAgenda.xaml` — Recherche Créneau
+Après chaque confirmation, le robot marque le créneau comme **`Occupé`** dans `Agenda_Medecin.xlsx` via :
 
-**Rôle** : Scanne le fichier `Agenda_Medecin.xlsx` ligne par ligne à la recherche du premier créneau dont le statut est `"Libre"`.
-
-**Arguments** :
-
-| Argument | Direction | Type | Description |
-|---|---|---|---|
-| `in_Config` | In | `Dictionary(String, Object)` | Accès au chemin de l'agenda |
-| `out_DateRDV` | Out | `String` | Date du créneau trouvé |
-| `out_HeureRDV` | Out | `String` | Heure du créneau trouvé |
-| `out_DisponibiliteTrouvee` | Out | `Boolean` | `True` si créneau trouvé |
+1. Lecture de l'agenda dans un `DataTable`
+2. Boucle `ForEach` sur les lignes pour trouver la correspondance `Date + Heure`
+3. Modification de la colonne `Statut` → `"Occupé"`
+4. Réécriture du `DataTable` complet dans le fichier Excel
 
 ---
 
-### 5. `EnregistrerRDVExcel.xaml` — Enregistrement RDV
+## 📊 Structure des Données (Fichiers Excel)
 
-**Rôle** : Ajoute une nouvelle ligne dans le fichier historique patients avec toutes les informations du rendez-vous confirmé.
+### `Demandes_Patients.xlsx` — Feuille `Demandes`
 
-**Arguments entrants** : `in_Config`, `in_PatientNom`, `in_PatientTelephone`, `in_PatientMotif`, `in_DateRDV`, `in_HeureRDV`
-**Argument sortant** : `out_RDVConfirme (Boolean)`
+| Colonne | Description |
+|---|---|
+| `ID` | Identifiant unique (ex: `RDV-001`) |
+| `Nom` | Nom complet du patient |
+| `Telephone` | Numéro de contact |
+| `Email` | Adresse email |
+| `Gender` | Genre (`Masculin` / `Féminin`) |
+| `Motif` | Motif de consultation |
+| `DateRDV` | Date souhaitée (format `JJ/MM/AAAA`) |
+| `HeureRDV` | Heure souhaitée (format `HH:MM`) |
+| `Statut` | `En attente` → `Traité` (mis à jour par le robot) |
+| `DateDemande` | Date de soumission de la demande |
+| `Notes` | Notes additionnelles |
 
----
+### `Agenda_Medecin.xlsx` — Feuille `Agenda`
 
-### 6. `MettreAJourAgenda.xaml` — Mise à Jour Agenda
+| Colonne | Description |
+|---|---|
+| `Date` | Date du créneau (format `JJ/MM/AAAA`) |
+| `Heure` | Heure du créneau (ex: `09:30`) |
+| `Statut` | `Libre` / `Occupé` |
+| `Patient` | Nom du patient réservant |
 
-**Rôle** : Modifie le statut du créneau réservé dans `Agenda_Medecin.xlsx` de `"Libre"` → `"Réservé – [PatientNom]"`.
+### `RendezVous_Confirmes.xlsx` — Feuille `RendezVous`
 
----
+Fichier écrit par le robot après chaque confirmation. Utilisé par le backend pour la détection de reprogrammation.
 
-### 7. `EnvoyerNotificationPatient.xaml` — Email Confirmation
-
-**Rôle** : Envoie un email SMTP personnalisé au patient contenant la date, l'heure et les consignes de préparation au RDV.
-
----
-
-### 8. `NotifierSecretaire.xaml` — Alerte Exception
-
-**Rôle** : Workflow de gestion d'exception. Envoie un email d'alerte à la secrétaire du cabinet si **aucun créneau n'est disponible** pour le patient.
-
----
-
-## 📊 Structure des Données
+| Colonne | Description |
+|---|---|
+| `Nom` | Nom du patient |
+| `Telephone` | Téléphone du patient |
+| `Motif` | Motif de consultation |
+| `Date` | Date du rendez-vous confirmé |
+| `Heure` | Heure du rendez-vous **réellement attribué** |
+| `Statut` | Timestamp de confirmation |
 
 ### `Config.xlsx` — Feuille `Config`
 
-| Cle | Valeur | Description |
+| Clé | Exemple de Valeur | Description |
 |---|---|---|
-| `CheminDemandesPatients` | `Data\Demandes_Patients.xlsx` | Fichier des demandes |
-| `CheminAgendaMedecin` | `Data\Agenda_Medecin.xlsx` | Agenda du médecin |
-| `CheminExecutionLog` | `Data\Execution_Log.xlsx` | Journal des logs |
+| `ExcelDemandesPath` | `Data\Demandes_Patients.xlsx` | Fichier des demandes |
+| `ExcelAgendaPath` | `Data\Agenda_Medecin.xlsx` | Agenda du médecin |
+| `ExcelRDVPath` | `Data\RendezVous_Confirmes.xlsx` | Fichier des RDV confirmés |
 | `EmailCabinet` | `votre@gmail.com` | Adresse Gmail expéditrice |
 | `SmtpPassword` | `xxxx xxxx xxxx xxxx` | Mot de passe d'application |
 | `SmtpServeur` | `smtp.gmail.com` | Serveur SMTP |
@@ -463,205 +302,209 @@ mini-project-rpa/
 
 ---
 
-### `Demandes_Patients.xlsx`
+## 🧩 Description des Workflows UiPath
 
-| Colonne | Type | Description |
-|---|---|---|
-| `Nom` | String | Nom complet du patient |
-| `Telephone` | String | Numéro de contact |
-| `Motif` | String | Motif de consultation |
-| `Email` | String | Adresse pour la confirmation |
-| `Statut` | String | `En attente` / `Traité` |
+### `Main.xaml` — Chef d'Orchestre
+
+Point d'entrée. Orchestre tous les sous-workflows, gère les variables partagées et définit le `TransactionStatus` final.
+
+### `InitAllSettings.xaml`
+
+Charge `Config.xlsx` et retourne un dictionnaire `Dictionary(String, Object)` avec tous les paramètres.
+
+### `LireDemandesExcel.xaml`
+
+Lit la **première ligne** avec le statut `En attente` dans `Demandes_Patients.xlsx`.
+
+**Nouveauté** : retourne aussi `out_HeureDemande` (l'heure souhaitée par le patient) pour la comparaison de conflit.
+
+### `VerifierDisponibiliteAgenda.xaml`
+
+Scanne `Agenda_Medecin.xlsx` pour trouver le premier créneau `Libre`.
+
+**Nouveauté** : compare le créneau trouvé avec `in_HeureSouhaitee` et met `out_IsRescheduled = True` si différent.
+
+### `EnregistrerRDVExcel.xaml`
+
+Ajoute une nouvelle ligne dans `RendezVous_Confirmes.xlsx` avec les détails du rendez-vous confirmé.
+
+### `MettreAJourAgenda.xaml`
+
+Met à jour le statut du créneau dans `Agenda_Medecin.xlsx` de `Libre` → `Occupé`.
+
+**Nouveauté** : implémentation complète avec lecture, boucle `ForEach`, modification et réécriture du fichier.
+
+### `EnvoyerNotificationPatient.xaml`
+
+Envoie un email HTML via SMTP Gmail.
+
+**Nouveauté** : deux templates dynamiques :
+- **Bleu** → confirmation directe
+- **Orange** → reprogrammation avec explication
+
+### `NotifierSecretaire.xaml`
+
+Envoie une alerte email à la secrétaire si aucun créneau n'est disponible.
 
 ---
 
-### `Agenda_Medecin.xlsx`
+## 🔄 Flux d'Exécution
 
-| Colonne | Type | Description |
-|---|---|---|
-| `Date` | String/Date | Date du créneau |
-| `Heure` | String | Heure du créneau (ex: `09:00`) |
-| `Statut` | String | `Libre` / `Réservé` |
-| `Patient` | String | Nom du patient réservant |
-
----
-
-### `Execution_Log.xlsx`
-
-| Colonne | Description |
-|---|---|
-| `Timestamp` | Horodatage de la transaction |
-| `PatientNom` | Nom du patient traité |
-| `DateRDV` | Date du rendez-vous |
-| `HeureRDV` | Heure du rendez-vous |
-| `Statut` | `SUCCESS` / `NO_SLOT` / `ERROR` |
+```
+Patient soumet formulaire
+         │
+         ▼ POST /api/submit
+Backend écrit dans Demandes_Patients.xlsx (Statut: "En attente")
+         │
+         ▼ Robot UiPath déclenché
+1. InitAllSettings   → charge Config.xlsx
+2. LireDemandesExcel → lit patient + heure souhaitée
+         │
+         ▼
+3. VerifierDisponibilite
+   ├── Créneau libre trouvé ?
+   │        │
+   │   OUI  ├── Heure = heure demandée ? → IsRescheduled = False
+   │        └── Heure ≠ heure demandée ? → IsRescheduled = True
+   │
+   └── NON → NotifierSecretaire → TransactionStatus = "NO_SLOT"
+         │
+         ▼ (si créneau trouvé)
+4. EnregistrerRDVExcel   → écrit dans RendezVous_Confirmes.xlsx
+5. MettreAJourAgenda     → marque créneau "Occupé"
+6. EnvoyerNotification
+   ├── IsRescheduled = False → Email bleu (Confirmation)
+   └── IsRescheduled = True  → Email orange (Reprogrammation)
+         │
+         ▼
+TransactionStatus = "SUCCESS"
+Statut patient mis à jour → "Traité"
+```
 
 ---
 
 ## 📧 Configuration SMTP / Email
 
-Le robot utilise le protocole **SMTP avec TLS** via Gmail pour envoyer les confirmations.
+Le robot utilise **SMTP avec TLS** via Gmail.
 
-### Étapes pour obtenir un Mot de Passe d'Application Google
+### Obtenir un Mot de Passe d'Application Google
 
-> ⚠️ Un mot de passe d'application est **différent** de votre mot de passe Gmail habituel. Il est généré spécifiquement pour les applications tierces.
-
-1. Connectez-vous à votre compte Google : [myaccount.google.com](https://myaccount.google.com)
-2. Allez dans **Sécurité** → **Connexion à Google**
-3. Activez la **Validation en deux étapes** (obligatoire)
-4. Dans **Sécurité** → **Mots de passe des applications**
-5. Sélectionnez `Autre (nom personnalisé)` → Tapez `UiPath RDV Robot`
-6. Cliquez **Générer** → Copiez le mot de passe à **16 caractères**
-7. Collez-le dans `Config.xlsx` à la clé `SmtpPassword`
-
-### Paramètres SMTP utilisés
-
-```
-Serveur  : smtp.gmail.com
-Port     : 587
-Sécurité : TLS (STARTTLS)
-Auth     : Nom d'utilisateur + Mot de passe d'application
-```
-
----
-
-## 🛡️ Gestion des Erreurs & Robustesse
-
-### Protection Anti-Crash (ContainsKey)
-
-Chaque accès au dictionnaire `Config` est protégé par une vérification d'existence :
-
-```vb
-' ✅ Sécurisé
-If Config.ContainsKey("EmailCabinet") Then
-    emailExp = Config("EmailCabinet").ToString
-End If
-
-' ❌ Dangereux — peut lever KeyNotFoundException
-emailExp = Config("EmailCabinet").ToString
-```
-
-### Zéro Conflit Excel (Activités Workbook)
-
-Le projet utilise exclusivement les activités **Workbook** (NPOI) plutôt que **Excel Application Scope** classique pour :
-
-- ✅ Fonctionner **sans Microsoft Excel installé**
-- ✅ Éviter les conflits si le fichier est ouvert par un utilisateur
-- ✅ Lecture en mode **ReadOnly** pour `Config.xlsx` (aucune modification accidentelle)
-- ✅ Exécution possible sur des **machines virtuelles sans UI**
-
-### Fallback Chemin par Défaut
-
-Si `in_ConfigFilePath` est vide à l'appel, le robot utilise automatiquement :
-
-```vb
-If String.IsNullOrEmpty(in_ConfigFilePath) Then
-    in_ConfigFilePath = "Data\Config.xlsx"
-End If
-```
-
-### Gestion du Cas "Aucun Créneau"
-
-Le robot ne crash pas si l'agenda est plein. La variable `DisponibiliteTrouvee` pilote le branchement :
-
-```
-DisponibiliteTrouvee = True  → Enregistrement + Confirmation patient
-DisponibiliteTrouvee = False → Alerte secrétaire + TransactionStatus = "NO_SLOT"
-```
+1. Aller sur [myaccount.google.com](https://myaccount.google.com)
+2. **Sécurité** → Activer la **Validation en deux étapes**
+3. **Sécurité** → **Mots de passe des applications**
+4. Créer un mot de passe pour `UiPath RDV Robot`
+5. Coller le mot de passe de 16 caractères dans `Config.xlsx` → clé `SmtpPassword`
 
 ---
 
 ## ⚙️ Prérequis & Installation
 
-### Prérequis Système
+### Robot UiPath
 
-| Composant | Version Minimale |
+| Composant | Version |
 |---|---|
-| UiPath Studio | 2022.10+ |
-| .NET Framework | Windows / .NET 6+ |
-| Microsoft Excel | ❌ Non requis (Workbook activities) |
-| Compte Gmail | Avec validation 2 étapes activée |
-
-### Packages UiPath Requis
-
-```
-UiPath.Excel.Activities        >= 2.16.0
-UiPath.Mail.Activities         >= 1.16.0
-UiPath.System.Activities       >= 22.10.0
-UiPath.UiAutomation.Activities >= 22.10.0
-```
-
-### Installation
+| UiPath Studio | 2022.10+ (Windows / .NET 6+) |
+| `UiPath.Excel.Activities` | >= 2.16.0 |
+| `UiPath.Mail.Activities` | >= 1.16.0 |
+| `UiPath.System.Activities` | >= 22.10.0 |
 
 ```bash
-# 1. Cloner / extraire le projet
-# 2. Ouvrir UiPath Studio
-# 3. File → Open → Sélectionner le dossier du projet
-# 4. Vérifier les dépendances : Manage Packages → Installed
-# 5. Configurer Data\Config.xlsx (voir section suivante)
-# 6. Lancer Main.xaml avec F5 ou le bouton Run
+# Ouvrir UiPath Studio
+# File → Open → Sélectionner le dossier mini-project-rpa/
+# Configurer Data/Config.xlsx
+# Lancer Main.xaml avec F5
+```
+
+### Backend
+
+```bash
+cd PatientApp/backend
+npm install       # ou: bun install
+npm run dev       # démarre sur http://localhost:8080
+```
+
+### Frontend
+
+```bash
+cd PatientApp/frontend
+npm install
+npm run dev       # démarre sur http://localhost:5173
 ```
 
 ---
 
 ## 🔧 Paramétrage de Config.xlsx
 
-Ouvrez `Data\Config.xlsx` et remplissez la feuille `Config` :
-
 ```
-┌────────────────────────────────┬────────────────────────────────────┐
-│ Cle                            │ Valeur                             │
-├────────────────────────────────┼────────────────────────────────────┤
-│ CheminDemandesPatients         │ Data\Demandes_Patients.xlsx        │
-│ CheminAgendaMedecin            │ Data\Agenda_Medecin.xlsx           │
-│ CheminExecutionLog             │ Data\Execution_Log.xlsx            │
-│ EmailCabinet                   │ votre.cabinet@gmail.com            │
-│ SmtpPassword                   │ abcd efgh ijkl mnop                │
-│ SmtpServeur                    │ smtp.gmail.com                     │
-│ SmtpPort                       │ 587                                │
-│ NomMedecin                     │ Dr. Nom Prénom                     │
-│ NomCabinet                     │ Cabinet Médical Mon Cabinet        │
-└────────────────────────────────┴────────────────────────────────────┘
+┌─────────────────────────┬────────────────────────────────────┐
+│ Clé                     │ Valeur                             │
+├─────────────────────────┼────────────────────────────────────┤
+│ ExcelDemandesPath       │ Data\Demandes_Patients.xlsx        │
+│ ExcelAgendaPath         │ Data\Agenda_Medecin.xlsx           │
+│ ExcelRDVPath            │ Data\RendezVous_Confirmes.xlsx     │
+│ EmailCabinet            │ votre.cabinet@gmail.com            │
+│ SmtpPassword            │ abcd efgh ijkl mnop                │
+│ SmtpServeur             │ smtp.gmail.com                     │
+│ SmtpPort                │ 587                                │
+│ NomMedecin              │ Dr. Nom Prénom                     │
+│ NomCabinet              │ Cabinet Médical Mon Cabinet        │
+└─────────────────────────┴────────────────────────────────────┘
 ```
 
-> ⚠️ **Ne commitez jamais `Config.xlsx` avec vos vraies credentials dans un dépôt public.**  
-> Ajoutez `Data/Config.xlsx` à votre `.gitignore` et utilisez un fichier `Config.example.xlsx`.
+> ⚠️ **Ne committez jamais `Config.xlsx` avec vos vraies credentials dans un dépôt public.**
 
 ---
 
-## 📈 Exécution & Logs
-
-### Logs UiPath Studio (Output Panel)
-
-Le robot produit des logs structurés à chaque étape :
+## 📁 Structure du Projet
 
 ```
-[INFO]  [RPA-RDV] === Démarrage du processus de prise de rendez-vous médical ===
-[INFO]  Configuration chargée – 9 paramètres
-[INFO]  [RPA-RDV] ÉTAPE 1 : Lecture du fichier Excel des demandes
-[INFO]  [RPA-RDV] ÉTAPE 2 : Consultation de l'agenda du médecin
-[INFO]  [RPA-RDV] ÉTAPE 3 : Enregistrement du rendez-vous dans Excel
-[INFO]  [RPA-RDV] ÉTAPE 4 : Mise à jour de l'agenda du médecin
-[INFO]  [RPA-RDV] ÉTAPE 5 : Envoi de la confirmation au patient
-[INFO]  [RPA-RDV] ✅ Rendez-vous CONFIRMÉ pour Jean Dupont le 2025-06-15 à 10:30
-[INFO]  [RPA-RDV] === Processus terminé. Statut : SUCCESS ===
+mini-project-rpa/
+│
+├── 📄 Main.xaml
+├── 📄 project.json
+│
+├── 📂 Workflows/
+│   ├── InitAllSettings.xaml
+│   ├── LireDemandesExcel.xaml
+│   ├── VerifierDisponibiliteAgenda.xaml
+│   ├── EnregistrerRDVExcel.xaml
+│   ├── MettreAJourAgenda.xaml
+│   ├── EnvoyerNotificationPatient.xaml
+│   └── NotifierSecretaire.xaml
+│
+├── 📂 Data/
+│   ├── Config.xlsx
+│   ├── Demandes_Patients.xlsx
+│   ├── Agenda_Medecin.xlsx
+│   ├── RendezVous_Confirmes.xlsx
+│   └── Log_Robot.xlsx
+│
+└── 📂 PatientApp/
+    ├── 📂 backend/
+    │   ├── server.js          ← API Express + lecture Excel
+    │   ├── .env               ← Credentials (non commité)
+    │   └── package.json
+    └── 📂 frontend/
+        ├── src/
+        │   ├── components/
+        │   │   ├── Agenda.jsx           ← Tableau de bord
+        │   │   ├── PatientForm.jsx      ← Formulaire patient
+        │   │   └── agenda/
+        │   │       ├── AppointmentCard.jsx  ← Carte RDV + badge reprogrammé
+        │   │       ├── AgendaHeader.jsx
+        │   │       ├── AgendaStats.jsx
+        │   │       └── AgendaControls.jsx
+        │   └── App.jsx
+        └── package.json
 ```
-
-### Statuts Possibles
-
-| Statut | Signification |
-|---|---|
-| `SUCCESS` | RDV enregistré, agenda mis à jour, email envoyé |
-| `NO_SLOT` | Aucun créneau libre, secrétaire notifiée |
-| `ERROR` | Exception non gérée (voir logs détaillés) |
 
 ---
 
 ## 👤 Auteur
 
 **Développé par LAITH MAHDI & DALEL LOUSSAIEF**  
-📧 Contact : [mahdilaith380@gmail.com](mailto:mahdilaith380@gmail.com)
+📧 Contact : [mahdilaith08@gmail.com](mailto:mahdilaith08@gmail.com)
 
 ---
 
-*Projet réalisé dans le cadre d'un mini-projet RPA — UiPath Studio, VB.NET, Excel Automation, SMTP Gmail.*
+*Projet réalisé dans le cadre d'un mini-projet RPA — UiPath Studio, React, Node.js, Excel Automation, SMTP Gmail.*

@@ -13,6 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const EXCEL_PATH = path.join(__dirname, '../../Data/Demandes_Patients.xlsx');
+const CONFIRMED_PATH = path.join(__dirname, '../../Data/RendezVous_Confirmes.xlsx');
 
 // Ensure Data directory exists
 const dataDir = path.dirname(EXCEL_PATH);
@@ -23,45 +24,86 @@ if (!fs.existsSync(dataDir)) {
 // Login Endpoint
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-    
+
     if (email === process.env.DOCTOR_EMAIL && password === process.env.DOCTOR_PASSWORD) {
         return res.json({ success: true, user: 'Doctor', role: 'doctor' });
     }
-    
+
     if (email === process.env.SECRETARY_EMAIL && password === process.env.SECRETARY_PASSWORD) {
         return res.json({ success: true, user: 'Secretaire', role: 'secretary' });
     }
-    
+
     res.status(401).json({ success: false, message: 'Identifiants invalides' });
 });
 
 // Get Appointments Endpoint (Agenda)
 app.get('/api/appointments', (req, res) => {
     try {
+        let demands = [];
+        let confirmed = [];
+
         if (fs.existsSync(EXCEL_PATH)) {
-            const workbook = xlsx.readFile(EXCEL_PATH);
-            const sheetName = workbook.SheetNames.includes('Demandes') ? 'Demandes' : workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const data = xlsx.utils.sheet_to_json(worksheet);
-            
-            // Map keys to match frontend expectations
-            const appointments = data.map(row => ({
+            const wbDemands = xlsx.readFile(EXCEL_PATH);
+            const sheetDemands = wbDemands.SheetNames.includes('Demandes') ? 'Demandes' : wbDemands.SheetNames[0];
+            demands = xlsx.utils.sheet_to_json(wbDemands.Sheets[sheetDemands]).filter(Boolean);
+        }
+
+        if (fs.existsSync(CONFIRMED_PATH)) {
+            const wbConfirmed = xlsx.readFile(CONFIRMED_PATH);
+            const sheetConfirmed = wbConfirmed.SheetNames.includes('RendezVous') ? 'RendezVous' : wbConfirmed.SheetNames[0];
+            confirmed = xlsx.utils.sheet_to_json(wbConfirmed.Sheets[sheetConfirmed]).filter(Boolean);
+        }
+
+        // Map keys and check for rescheduling
+        const appointments = demands.map(row => {
+            // Helper to find value by case-insensitive key
+            const getVal = (obj, keyName) => {
+                if (!obj || typeof obj !== 'object') return null;
+                const foundKey = Object.keys(obj).find(k => k.trim().toLowerCase() === keyName.toLowerCase());
+                return foundKey ? obj[foundKey] : null;
+            };
+
+            const demandName = String(getVal(row, 'Nom') || '').trim().toLowerCase();
+            const demandPhoneFull = String(getVal(row, 'Telephone') || '').replace(/\D/g, '');
+            const demandPhone8 = demandPhoneFull.slice(-8);
+            const requestedHeure = String(getVal(row, 'HeureRDV') || '').trim();
+
+            // Find latest confirmed entry for this patient
+            const confirmedEntry = confirmed.slice().reverse().find(c => {
+                const confirmedName = String(getVal(c, 'Nom') || '').trim().toLowerCase();
+                const confirmedPhoneFull = String(getVal(c, 'Telephone') || '').replace(/\D/g, '');
+                const confirmedPhone8 = confirmedPhoneFull.slice(-8);
+
+                const nameMatch = demandName === confirmedName;
+                const phoneMatch = demandPhone8 && demandPhone8 === confirmedPhone8;
+
+                return nameMatch && phoneMatch;
+            });
+
+            const confirmedHeure = confirmedEntry
+                ? String(getVal(confirmedEntry, 'Heure') || '').trim()
+                : requestedHeure;
+
+            // It is rescheduled if a confirmation exists and the time is different
+            const isRescheduled = !!(confirmedEntry && confirmedHeure && confirmedHeure !== requestedHeure);
+
+            return {
                 id: row['ID'],
                 nom: row['Nom'],
                 telephone: row['Telephone'],
                 email: row['Email'],
                 gender: row['Gender'],
                 motif: row['Motif'],
-                heure: row['HeureRDV'],
+                heure: confirmedHeure,
+                requestedHeure: requestedHeure,
                 statut: row['Statut'],
                 date: row['DateDemande'],
-                notes: row['Notes']
-            }));
-            
-            res.json(appointments);
-        } else {
-            res.json([]);
-        }
+                notes: row['Notes'],
+                isRescheduled: isRescheduled
+            };
+        });
+
+        res.json(appointments);
     } catch (error) {
         console.error('Error reading appointments:', error);
         res.status(500).json({ error: 'Erreur lors de la lecture des données.' });
@@ -104,10 +146,10 @@ app.post('/api/submit', (req, res) => {
         data.push(newEntry);
 
         const newWorksheet = xlsx.utils.json_to_sheet(data);
-        
+
         // Ensure column widths
         newWorksheet['!cols'] = [
-            { wch: 10 }, { wch: 25 }, { wch: 15 }, { wch: 25 }, 
+            { wch: 10 }, { wch: 25 }, { wch: 15 }, { wch: 25 },
             { wch: 12 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 40 }
         ];
 

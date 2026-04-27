@@ -41,9 +41,23 @@ const AppointmentCard = ({ appointment }) => {
         </div>
         <div className="flex items-center gap-3 text-slate-600">
           <Clock size={16} className="text-slate-400" />
-          <span className="text-sm">
-            {appointment.heure || "Heure non précisée"}
-          </span>
+          <div className="flex flex-col">
+            <span
+              className={`text-sm ${appointment.isRescheduled ? "text-amber-600 font-bold" : "font-medium"}`}
+            >
+              {appointment.heure || "Heure non précisée"}
+            </span>
+            {appointment.isRescheduled && (
+              <span className="text-[10px] text-slate-400 line-through">
+                (Prévu: {appointment.requestedHeure})
+              </span>
+            )}
+          </div>
+          {appointment.isRescheduled && (
+            <span className="ml-auto px-2 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded uppercase tracking-wider">
+              Reprogrammé
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-3 text-slate-600">
           <Phone size={16} className="text-slate-400" />
