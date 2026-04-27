@@ -4,6 +4,8 @@
     <x:Property Name="out_DateRDV" Type="OutArgument(x:String)" />
     <x:Property Name="out_HeureRDV" Type="OutArgument(x:String)" />
     <x:Property Name="out_DisponibiliteTrouvee" Type="OutArgument(x:Boolean)" />
+    <x:Property Name="in_HeureSouhaitee" Type="InArgument(x:String)" />
+    <x:Property Name="out_IsRescheduled" Type="OutArgument(x:Boolean)" />
   </x:Members>
   <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
@@ -134,6 +136,14 @@
       </Assign.To>
       <Assign.Value>
         <InArgument x:TypeArguments="x:Boolean">[v_Trouve]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="[OUT] IsRescheduled" sap:VirtualizedContainerService.HintSize="500,166" sap2010:WorkflowViewState.IdRef="Assign_8">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Boolean">[out_IsRescheduled]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Boolean">[v_Trouve AndAlso (v_Heure &lt;&gt; in_HeureSouhaitee)]</InArgument>
       </Assign.Value>
     </Assign>
   </Sequence>
