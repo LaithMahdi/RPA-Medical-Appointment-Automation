@@ -4,30 +4,7 @@
     {
       "filePath": "Main/Main.xaml",
       "uniqueId": "9fc1dbea-649f-4d1a-ac7a-9db58e87a164",
-      "type": "process",
-      "input": {
-        "type": "object",
-        "properties": {
-          "Config": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object"
-            }
-          }
-        },
-        "required": []
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "Config": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object"
-            }
-          }
-        }
-      }
+      "type": "process"
     }
   ]
 }
