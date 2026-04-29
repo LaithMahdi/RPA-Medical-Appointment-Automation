@@ -69,6 +69,7 @@
       <Variable x:TypeArguments="x:String" Name="PatientEmail" />
       <Variable x:TypeArguments="x:String" Name="PatientID" />
       <Variable x:TypeArguments="x:String" Name="HeureDemande" />
+      <Variable x:TypeArguments="x:String" Name="DateDemande" />
       <Variable x:TypeArguments="x:Boolean" Name="IsRescheduled" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
@@ -93,6 +94,7 @@
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientEmail">[PatientEmail]</OutArgument>
         <OutArgument x:TypeArguments="x:String" x:Key="out_PatientID">[PatientID]</OutArgument>
         <OutArgument x:TypeArguments="x:String" x:Key="out_HeureDemande">[HeureDemande]</OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_DateDemande">[DateDemande]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
     <If Condition="[Not String.IsNullOrEmpty(PatientID)]" DisplayName="[IF] Demande en attente trouvée ?" sap:VirtualizedContainerService.HintSize="450,1130" sap2010:WorkflowViewState.IdRef="If_2">
@@ -111,6 +113,7 @@
               <OutArgument x:TypeArguments="x:String" x:Key="out_HeureRDV">[HeureRDV]</OutArgument>
               <OutArgument x:TypeArguments="x:Boolean" x:Key="out_DisponibiliteTrouvee">[DisponibiliteTrouvee]</OutArgument>
               <InArgument x:TypeArguments="x:String" x:Key="in_HeureSouhaitee">[HeureDemande]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_DateSouhaitee">[DateDemande]</InArgument>
               <OutArgument x:TypeArguments="x:Boolean" x:Key="out_IsRescheduled">[IsRescheduled]</OutArgument>
             </ui:InvokeWorkflowFile.Arguments>
           </ui:InvokeWorkflowFile>
@@ -136,6 +139,7 @@
                     <InArgument x:TypeArguments="x:String" x:Key="in_DateRDV">[DateRDV]</InArgument>
                     <InArgument x:TypeArguments="x:String" x:Key="in_HeureRDV">[HeureRDV]</InArgument>
                     <InArgument x:TypeArguments="x:String" x:Key="in_PatientNom">[PatientNom]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PatientMotif">[PatientMotif]</InArgument>
                   </ui:InvokeWorkflowFile.Arguments>
                 </ui:InvokeWorkflowFile>
                 <ui:LogMessage DisplayName="[LOG] Étape 5 – Envoi notification" sap2010:WorkflowViewState.IdRef="LogMessage_6" Level="Info" Message="[&quot;[RPA-RDV] ÉTAPE 5 : Envoi de la confirmation au patient&quot;]" />

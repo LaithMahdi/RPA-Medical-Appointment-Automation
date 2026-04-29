@@ -1,10 +1,11 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="UiPath.RDV.VerifierDisponibiliteAgenda" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="UiPath_RDV_VerifierDisponibiliteAgenda" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
     <x:Property Name="out_DateRDV" Type="OutArgument(x:String)" />
     <x:Property Name="out_HeureRDV" Type="OutArgument(x:String)" />
     <x:Property Name="out_DisponibiliteTrouvee" Type="OutArgument(x:Boolean)" />
     <x:Property Name="in_HeureSouhaitee" Type="InArgument(x:String)" />
+    <x:Property Name="in_DateSouhaitee" Type="InArgument(x:String)" />
     <x:Property Name="out_IsRescheduled" Type="OutArgument(x:Boolean)" />
   </x:Members>
   <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
@@ -38,7 +39,7 @@
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Vérifier Disponibilité Agenda Médecin" sap:VirtualizedContainerService.HintSize="1281,2136" sap2010:WorkflowViewState.IdRef="Sequence_3">
+  <Sequence DisplayName="Vérifier Disponibilité Agenda Médecin" sap:VirtualizedContainerService.HintSize="1578,2216" sap2010:WorkflowViewState.IdRef="Sequence_3">
     <Sequence.Variables>
       <Variable x:TypeArguments="sd:DataTable" Name="dt_Agenda" />
       <Variable x:TypeArguments="x:String" Name="v_CheminAgenda" />
@@ -68,14 +69,14 @@
       </Assign.Value>
     </Assign>
     <ui:LogMessage sap:VirtualizedContainerService.HintSize="500,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Consultation de l'agenda : &quot; + v_CheminAgenda]" />
-    <ui:ReadRange AddHeaders="True" DataTable="[dt_Agenda]" DisplayName="[EXCEL] Lire feuille Agenda" sap:VirtualizedContainerService.HintSize="500,111" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Agenda" WorkbookPath="[v_CheminAgenda]">
+    <ui:ReadRange AddHeaders="True" DataTable="[dt_Agenda]" DisplayName="[EXCEL] Lire feuille Agenda" sap:VirtualizedContainerService.HintSize="500,227" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Agenda" WorkbookPath="[v_CheminAgenda]">
       <ui:ReadRange.Range>
         <InArgument x:TypeArguments="x:String">
           <Literal x:TypeArguments="x:String" Value="" />
         </InArgument>
       </ui:ReadRange.Range>
     </ui:ReadRange>
-    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Chercher créneau disponible" sap:VirtualizedContainerService.HintSize="500,934" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_Agenda.Select(&quot;Statut = 'Libre'&quot;).OrderBy(Function(r) r(&quot;Date&quot;).ToString).Take(1).ToArray]">
+    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Chercher créneau disponible" sap:VirtualizedContainerService.HintSize="500,934" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[If(dt_Agenda.Select().Any(Function(r) r(&quot;Date&quot;).ToString.Contains(in_DateSouhaitee) AndAlso r(&quot;Heure&quot;).ToString.Trim = in_HeureSouhaitee AndAlso r(&quot;Statut&quot;).ToString.Trim = &quot;Libre&quot;), dt_Agenda.Select().Where(Function(r) r(&quot;Date&quot;).ToString.Contains(in_DateSouhaitee) AndAlso r(&quot;Heure&quot;).ToString.Trim = in_HeureSouhaitee AndAlso r(&quot;Statut&quot;).ToString.Trim = &quot;Libre&quot;).ToArray(), dt_Agenda.Select().Where(Function(r) r(&quot;Statut&quot;).ToString.Trim = &quot;Libre&quot;).OrderBy(Function(r) r(&quot;Date&quot;).ToString).ThenBy(Function(r) r(&quot;Heure&quot;).ToString).Take(1).ToArray())]">
       <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>
           <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
@@ -143,7 +144,7 @@
         <OutArgument x:TypeArguments="x:Boolean">[out_IsRescheduled]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:Boolean">[v_Trouve AndAlso (v_Heure &lt;&gt; in_HeureSouhaitee)]</InArgument>
+        <InArgument x:TypeArguments="x:Boolean">[v_Trouve AndAlso (v_Date &lt;&gt; in_DateSouhaitee OrElse v_Heure &lt;&gt; in_HeureSouhaitee)]</InArgument>
       </Assign.Value>
     </Assign>
   </Sequence>

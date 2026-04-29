@@ -4,6 +4,7 @@
     <x:Property Name="in_DateRDV" Type="InArgument(x:String)" />
     <x:Property Name="in_HeureRDV" Type="InArgument(x:String)" />
     <x:Property Name="in_PatientNom" Type="InArgument(x:String)" />
+    <x:Property Name="in_PatientMotif" Type="InArgument(x:String)" />
   </x:Members>
   <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
@@ -139,6 +140,22 @@
             </Assign.To>
             <Assign.Value>
               <InArgument x:TypeArguments="x:Object">["Occupé"]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="[SET] Patient Nom" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_6">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Object">[dt_Agenda.Rows(v_LigneIndex)("Patient")]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Object">[in_PatientNom]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="[SET] Motif" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_7">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Object">[dt_Agenda.Rows(v_LigneIndex)("Motif")]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Object">[in_PatientMotif]</InArgument>
             </Assign.Value>
           </Assign>
           <ui:WriteRange DataTable="[dt_Agenda]" DisplayName="[EXCEL] Enregistrer Agenda" sap:VirtualizedContainerService.HintSize="416,270" sap2010:WorkflowViewState.IdRef="WriteRange_1" SheetName="Agenda" StartingCell="A1" WorkbookPath="[v_CheminAgenda]" />
