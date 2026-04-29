@@ -19,6 +19,10 @@
       <x:String>System.Linq</x:String>
       <x:String>UiPath.Core</x:String>
       <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Activities.Statements</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -37,9 +41,12 @@
       <AssemblyReference>UiPath.Platform</AssemblyReference>
       <AssemblyReference>UiPath.System.Activities</AssemblyReference>
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>UiPath.Workflow</AssemblyReference>
+      <AssemblyReference>System.Collections.NonGeneric</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Vérifier Disponibilité Agenda Médecin" sap:VirtualizedContainerService.HintSize="1578,2216" sap2010:WorkflowViewState.IdRef="Sequence_3">
+  <Sequence DisplayName="Vérifier Disponibilité Agenda Médecin" sap:VirtualizedContainerService.HintSize="1578,2578" sap2010:WorkflowViewState.IdRef="Sequence_3">
     <Sequence.Variables>
       <Variable x:TypeArguments="sd:DataTable" Name="dt_Agenda" />
       <Variable x:TypeArguments="x:String" Name="v_CheminAgenda" />
@@ -60,12 +67,26 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <Assign DisplayName="[SET] Chemin fichier Agenda" sap:VirtualizedContainerService.HintSize="500,175" sap2010:WorkflowViewState.IdRef="Assign_1">
+    <If Condition="[in_Config Is Nothing]" DisplayName="[DEBUG] Check Config" sap:VirtualizedContainerService.HintSize="500,394" sap2010:WorkflowViewState.IdRef="If_100">
+      <If.Then>
+        <ui:LogMessage sap:VirtualizedContainerService.HintSize="450,143" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Error" Message="[&quot;[RPA-RDV] ERROR: in_Config is NULL in VerifierDisponibiliteAgenda!&quot;]" />
+      </If.Then>
+      <If.Else>
+        <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="450,90" sap2010:WorkflowViewState.IdRef="Sequence_4">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+        </Sequence>
+      </If.Else>
+    </If>
+    <Assign DisplayName="[SET] Chemin fichier Agenda" sap:VirtualizedContainerService.HintSize="334,143" sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[v_CheminAgenda]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">[CStr(in_Config("ExcelAgendaPath"))]</InArgument>
+        <InArgument x:TypeArguments="x:String">[If(in_Config IsNot Nothing AndAlso in_Config.ContainsKey("ExcelAgendaPath"), in_Config("ExcelAgendaPath").ToString, "Data\Agenda_Medecin.xlsx")]</InArgument>
       </Assign.Value>
     </Assign>
     <ui:LogMessage sap:VirtualizedContainerService.HintSize="500,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[RPA-RDV] Consultation de l'agenda : &quot; + v_CheminAgenda]" />
@@ -76,7 +97,7 @@
         </InArgument>
       </ui:ReadRange.Range>
     </ui:ReadRange>
-    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Chercher créneau disponible" sap:VirtualizedContainerService.HintSize="500,934" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[If(dt_Agenda.Select().Any(Function(r) r(&quot;Date&quot;).ToString.Contains(in_DateSouhaitee) AndAlso r(&quot;Heure&quot;).ToString.Trim = in_HeureSouhaitee AndAlso r(&quot;Statut&quot;).ToString.Trim = &quot;Libre&quot;), dt_Agenda.Select().Where(Function(r) r(&quot;Date&quot;).ToString.Contains(in_DateSouhaitee) AndAlso r(&quot;Heure&quot;).ToString.Trim = in_HeureSouhaitee AndAlso r(&quot;Statut&quot;).ToString.Trim = &quot;Libre&quot;).ToArray(), dt_Agenda.Select().Where(Function(r) r(&quot;Statut&quot;).ToString.Trim = &quot;Libre&quot;).OrderBy(Function(r) r(&quot;Date&quot;).ToString).ThenBy(Function(r) r(&quot;Heure&quot;).ToString).Take(1).ToArray())]">
+    <ForEach x:TypeArguments="sd:DataRow" DisplayName="[LOOP] Chercher créneau disponible" sap:VirtualizedContainerService.HintSize="500,934" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[If(dt_Agenda.Select().Any(Function(r) DateTime.Parse(r(&quot;Date&quot;).ToString).Date = DateTime.Parse(in_DateSouhaitee, New System.Globalization.CultureInfo(&quot;fr-FR&quot;)).Date AndAlso r(&quot;Heure&quot;).ToString.Trim.StartsWith(in_HeureSouhaitee.Trim) AndAlso r(&quot;Statut&quot;).ToString.Trim = &quot;Libre&quot;), dt_Agenda.Select().Where(Function(r) DateTime.Parse(r(&quot;Date&quot;).ToString).Date = DateTime.Parse(in_DateSouhaitee, New System.Globalization.CultureInfo(&quot;fr-FR&quot;)).Date AndAlso r(&quot;Heure&quot;).ToString.Trim.StartsWith(in_HeureSouhaitee.Trim) AndAlso r(&quot;Statut&quot;).ToString.Trim = &quot;Libre&quot;).ToArray(), dt_Agenda.Select().Where(Function(r) r(&quot;Statut&quot;).ToString.Trim = &quot;Libre&quot;).OrderBy(Function(r) r(&quot;Date&quot;).ToString).ThenBy(Function(r) r(&quot;Heure&quot;).ToString).Take(1).ToArray())]">
       <ActivityAction x:TypeArguments="sd:DataRow">
         <ActivityAction.Argument>
           <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
@@ -144,7 +165,7 @@
         <OutArgument x:TypeArguments="x:Boolean">[out_IsRescheduled]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:Boolean">[v_Trouve AndAlso (v_Date &lt;&gt; in_DateSouhaitee OrElse v_Heure &lt;&gt; in_HeureSouhaitee)]</InArgument>
+        <InArgument x:TypeArguments="x:Boolean">[v_Trouve AndAlso (DateTime.Parse(v_Date).Date &lt;&gt; DateTime.Parse(in_DateSouhaitee, New System.Globalization.CultureInfo("fr-FR")).Date OrElse Not v_Heure.Trim.StartsWith(in_HeureSouhaitee.Trim))]</InArgument>
       </Assign.Value>
     </Assign>
   </Sequence>
