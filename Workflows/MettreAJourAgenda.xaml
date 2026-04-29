@@ -134,12 +134,12 @@
               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
             </scg:Dictionary>
           </sap:WorkflowViewStateService.ViewState>
-          <Assign DisplayName="[SET] Statut = Occupé" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_3">
+          <Assign DisplayName="[SET] Statut = Réservé" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_3">
             <Assign.To>
               <OutArgument x:TypeArguments="x:Object">[dt_Agenda.Rows(v_LigneIndex)("Statut")]</OutArgument>
             </Assign.To>
             <Assign.Value>
-              <InArgument x:TypeArguments="x:Object">["Occupé"]</InArgument>
+              <InArgument x:TypeArguments="x:Object">["Réservé"]</InArgument>
             </Assign.Value>
           </Assign>
           <Assign DisplayName="[SET] Patient Nom" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_6">
